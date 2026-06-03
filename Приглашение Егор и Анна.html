@@ -61,7 +61,10 @@ a{color:inherit;}
   width:min(100%,var(--page));
   min-height:100vh;
   margin:0 auto;
-  overflow:hidden;
+  /* overflow:clip обрезает вылезающие элементы (частицы, грозди) по горизонтали,
+     но — в отличие от hidden — НЕ создаёт scroll-контейнер и не ломает
+     position:sticky у секции виноградника внутри. */
+  overflow:clip;
   background:
     radial-gradient(130% 90% at 50% -10%,#fff 0,#fffaf1 38%,var(--paper) 100%);
   box-shadow:0 0 0 1px rgba(130,115,80,.09),0 24px 90px rgba(80,64,39,.13);
@@ -806,6 +809,49 @@ a{color:inherit;}
 }
 .rsvp-thanks.show{display:block;}
 
+/* Виноград: покадровая анимация, привязанная к скроллу */
+.grapes-grow{
+  position:relative;
+  /* Высота секции = «дистанция» прокрутки скраба. 300svh = ~2 экрана
+     прокрутки на проигрывание всех кадров, пока кадр закреплён. */
+  height:300svh;
+  background:
+    radial-gradient(120% 60% at 50% 0%,#fff 0,var(--paper) 60%,#f4ede1 100%);
+}
+.grapes-sticky{
+  position:sticky;
+  top:0;
+  height:100svh;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
+.grapes-canvas{
+  width:min(100%,var(--page));
+  height:auto;
+  max-height:78svh;
+  object-fit:contain;
+  /* Лёгкая виньетка под ivory-фон, чтобы белый фон видео сливался со страницей */
+  -webkit-mask-image:radial-gradient(120% 120% at 50% 50%,#000 62%,transparent 100%);
+          mask-image:radial-gradient(120% 120% at 50% 50%,#000 62%,transparent 100%);
+}
+.grapes-overlay{
+  position:absolute;
+  left:24px;
+  right:24px;
+  bottom:max(40px,env(safe-area-inset-bottom));
+  text-align:center;
+  pointer-events:none;
+}
+.grapes-caption{
+  margin:10px auto 0;
+  max-width:300px;
+  font-size:23px;
+  font-style:italic;
+  line-height:1.3;
+  color:var(--ink);
+}
+
 .final-banner{
   min-height:520px;
   display:grid;
@@ -876,6 +922,9 @@ a{color:inherit;}
   *{animation:none!important;transition:none!important;scroll-behavior:auto!important;}
   body.preopen{height:auto;overflow:auto;}
   .invitation,.pair-photo,.pair-copy,.reveal{opacity:1;transform:none;}
+  /* Без скролл-скраба: секция в один экран, показываем один кадр статично. */
+  .grapes-grow{height:auto;}
+  .grapes-sticky{position:relative;height:auto;padding:48px 0;}
 }
 </style>
 </head>
@@ -913,6 +962,16 @@ a{color:inherit;}
   </section>
 
   <main class="invitation" id="content">
+    <section class="grapes-grow" id="grapesGrow" aria-label="Созревание винограда">
+      <div class="grapes-sticky">
+        <canvas class="grapes-canvas" id="grapesCanvas" width="960" height="540" aria-hidden="true"></canvas>
+        <div class="grapes-overlay">
+          <span class="kicker">от завязи до спелости</span>
+          <p class="grapes-caption serif">Как зреет виноград — так зрела и наша любовь</p>
+        </div>
+      </div>
+    </section>
+
     <section class="screen center" id="date">
       <div class="vine top-right" aria-hidden="true"><svg viewBox="0 0 120 120" fill="none"><path d="M17 100C52 77 78 46 104 15" stroke="currentColor" stroke-width="1.2"/><path d="M42 76c-17-2-23-12-24-25 16 0 27 8 24 25ZM66 53c-16-5-20-16-17-28 15 3 24 14 17 28ZM83 34c-7-15-2-25 9-32 8 13 5 26-9 32Z" fill="currentColor" opacity=".55"/></svg></div>
       <div class="date-number reveal">20</div>
@@ -1132,6 +1191,9 @@ a{color:inherit;}
     programPathLength = 0;
     requestProgramMotion();
 
+    // Запускаем фоновую загрузку кадров виноградника — первый экран уже позади.
+    if(startGrapesPreload) startGrapesPreload();
+
     window.setTimeout(() => music.classList.remove('hint'), 5200);
   }
   opener.addEventListener('click', openInvitation);
@@ -1245,6 +1307,107 @@ a{color:inherit;}
     programPathLength = 0;
     requestProgramMotion();
   }, {passive:true});
+
+  // --- Виноград: покадровый скролл-скраб на canvas ---
+  const grapesSection = document.getElementById('grapesGrow');
+  const grapesCanvas = document.getElementById('grapesCanvas');
+  const GRAPES_FRAMES = 96;
+  function grapesFrameSrc(i){
+    return `assets/grapes-seq/frame-${String(i).padStart(3,'0')}.webp`;
+  }
+
+  function initGrapes(){
+    if(!grapesSection || !grapesCanvas) return;
+    const gctx = grapesCanvas.getContext('2d', {alpha:true});
+
+    // При reduced-motion скролл-скраб не нужен — рисуем один спелый кадр.
+    if(reduceMotion){
+      const still = new Image();
+      still.decoding = 'async';
+      still.onload = () => gctx.drawImage(still, 0, 0, grapesCanvas.width, grapesCanvas.height);
+      still.src = grapesFrameSrc(GRAPES_FRAMES - 1);
+      return null;
+    }
+
+    const frames = new Array(GRAPES_FRAMES).fill(null);
+    const loaded = new Array(GRAPES_FRAMES).fill(false);
+    let lastDrawn = -1;
+    let grapesFrame = null;
+
+    function draw(i){
+      // Если кадр ещё не готов — берём ближайший загруженный, чтобы не мигать.
+      let idx = i;
+      if(!loaded[idx]){
+        idx = -1;
+        for(let d = 1; d < GRAPES_FRAMES; d++){
+          if(i - d >= 0 && loaded[i - d]){ idx = i - d; break; }
+          if(i + d < GRAPES_FRAMES && loaded[i + d]){ idx = i + d; break; }
+        }
+        if(idx < 0) return;
+      }
+      if(idx === lastDrawn) return;
+      lastDrawn = idx;
+      const img = frames[idx];
+      if(img) gctx.drawImage(img, 0, 0, grapesCanvas.width, grapesCanvas.height);
+    }
+
+    function update(){
+      grapesFrame = null;
+      const rect = grapesSection.getBoundingClientRect();
+      const viewport = window.innerHeight || document.documentElement.clientHeight;
+      // Прогресс, пока секция проезжает через закреплённую зону.
+      const travel = Math.max(1, rect.height - viewport);
+      const progress = clamp(-rect.top / travel, 0, 1);
+      const target = Math.min(GRAPES_FRAMES - 1, Math.round(progress * (GRAPES_FRAMES - 1)));
+      draw(target);
+    }
+
+    function requestUpdate(){
+      if(grapesFrame) return;
+      grapesFrame = window.requestAnimationFrame(update);
+    }
+
+    function loadFrame(i){
+      return new Promise(resolve => {
+        const img = new Image();
+        img.decoding = 'async';
+        img.onload = () => {
+          frames[i] = img;
+          loaded[i] = true;
+          resolve();
+        };
+        img.onerror = resolve;
+        img.src = grapesFrameSrc(i);
+      });
+    }
+
+    // Первый кадр — сразу, чтобы секция не была пустой.
+    loadFrame(0).then(() => requestUpdate());
+
+    // Остальные кадры подгружаем последовательно в фоне.
+    let started = false;
+    function preloadRest(){
+      if(started) return;
+      started = true;
+      let i = 1;
+      (function next(){
+        if(i >= GRAPES_FRAMES) return;
+        const cur = i++;
+        loadFrame(cur).then(() => {
+          requestUpdate();
+          next();
+        });
+      })();
+    }
+
+    window.addEventListener('scroll', requestUpdate, {passive:true});
+    window.addEventListener('resize', requestUpdate, {passive:true});
+
+    // Возвращаем триггер фоновой загрузки — запустим после открытия конверта.
+    return preloadRest;
+  }
+
+  const startGrapesPreload = initGrapes();
 
   const target = new Date('2026-08-20T15:20:00+03:00').getTime();
   const els = {
