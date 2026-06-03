@@ -13,6 +13,11 @@
   --paper:#fffdf7;
   --paper-2:#faf5eb;
   --paper-3:#f1eadf;
+  /* Seamless sage-ivory page backdrop palette */
+  --bg-main:#F4F7EF;        /* soft sage ivory */
+  --bg-champagne:#EEF2E8;   /* pale champagne */
+  --bg-olive:#E6ECD9;       /* very subtle olive tint */
+  --bg-cream:#F8F7F2;       /* warm cream highlight (center) */
   --ink:#27241e;
   --soft:#746f64;
   --muted:#9a9489;
@@ -34,14 +39,38 @@ html{
   min-height:100%;
   scroll-behavior:smooth;
   -webkit-text-size-adjust:100%;
-  background:#efe8dd;
+  background:var(--bg-main);
   -webkit-overflow-scrolling:touch;
 }
 body{
   margin:0;
   min-height:100%;
   color:var(--ink);
-  background:linear-gradient(90deg,#eee5d9 0,#fff 16%,#fff 84%,#eee5d9 100%);
+  /* One continuous, seamless sage-ivory backdrop for the whole page.
+     Vertical gradient: warm cream centre, delicate olive-sage at top/bottom edges.
+     A faint horizontal sage tint at the side edges and an almost-imperceptible
+     vignette add organic depth. Fixed so it never tiles, repeats or seams
+     across scroll — the entire document shares one uninterrupted background. */
+  background:
+    radial-gradient(150% 60% at 50% 50%,
+      rgba(248,247,242,.55) 0%,
+      rgba(248,247,242,0) 60%),
+    linear-gradient(90deg,
+      var(--bg-olive) 0%,
+      var(--bg-champagne) 14%,
+      var(--bg-cream) 50%,
+      var(--bg-champagne) 86%,
+      var(--bg-olive) 100%),
+    linear-gradient(180deg,
+      var(--bg-olive) 0%,
+      var(--bg-champagne) 12%,
+      var(--bg-main) 40%,
+      var(--bg-cream) 50%,
+      var(--bg-main) 60%,
+      var(--bg-champagne) 88%,
+      var(--bg-olive) 100%);
+  background-attachment:fixed;
+  background-color:var(--bg-main);
   font-family:var(--sans);
   font-size:16px;
   font-weight:300;
@@ -51,6 +80,21 @@ body{
   -moz-osx-font-smoothing:grayscale;
   text-rendering:optimizeLegibility;
 }
+/* Fine handmade-paper grain — a fixed, full-viewport SVG fractal-noise wash
+   sitting just above the gradient and below all content. Extremely low opacity
+   keeps it imperceptible as a pattern, adding only a soft matte organic depth.
+   pointer-events:none so it never intercepts taps/scroll. */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:.05;
+  mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:180px 180px;
+}
 body.preopen{height:100svh;overflow:hidden;}
 button,input,textarea,select{font:inherit;}
 button{cursor:pointer;}
@@ -58,6 +102,8 @@ img{display:block;max-width:100%;}
 a{color:inherit;}
 
 .page{
+  position:relative;
+  z-index:1; /* sit above the fixed gradient + paper-grain backdrop */
   width:min(100%,var(--page));
   min-height:100vh;
   margin:0 auto;
@@ -65,9 +111,9 @@ a{color:inherit;}
      но — в отличие от hidden — НЕ создаёт scroll-контейнер и не ломает
      position:sticky у секции виноградника внутри. */
   overflow:clip;
-  background:
-    radial-gradient(130% 90% at 50% -10%,#fff 0,#fffaf1 38%,var(--paper) 100%);
-  box-shadow:0 0 0 1px rgba(130,115,80,.09),0 24px 90px rgba(80,64,39,.13);
+  /* Transparent so the single seamless page backdrop shows through with no
+     section borders, frames or block edges. */
+  background:transparent;
 }
 
 .screen{
@@ -75,8 +121,9 @@ a{color:inherit;}
   position:relative;
   padding:58px 24px 46px;
   overflow:hidden;
-  background:
-    radial-gradient(120% 80% at 50% 0%,#fff 0%,var(--paper) 54%,#f8f1e5 100%);
+  /* Transparent — one continuous background runs uninterrupted behind every
+     screen, with no per-section gradient seams. */
+  background:transparent;
 }
 .screen.compact{min-height:auto;padding-top:78px;padding-bottom:78px;}
 .center{text-align:center;}
@@ -133,7 +180,7 @@ a{color:inherit;}
   place-items:center;
   padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom));
   background:
-    radial-gradient(120% 70% at 50% -10%,#fff 0,#fbf5ec 64%,#efe6d8 100%);
+    radial-gradient(120% 70% at 50% -10%,var(--bg-cream) 0,var(--bg-champagne) 64%,var(--bg-olive) 100%);
 }
 .particle-layer{
   position:absolute;
@@ -414,7 +461,7 @@ a{color:inherit;}
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg,var(--paper) 0,rgba(255,253,247,.56) 22%,rgba(255,253,247,0) 58%);
+  background:linear-gradient(180deg,var(--bg-main) 0,rgba(244,247,239,.56) 22%,rgba(244,247,239,0) 58%);
 }
 
 .venue-photo{
@@ -434,7 +481,7 @@ a{color:inherit;}
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg,rgba(255,253,247,0) 52%,var(--paper) 96%);
+  background:linear-gradient(180deg,rgba(244,247,239,0) 52%,var(--bg-main) 96%);
 }
 .venue-card{
   position:relative;
@@ -813,11 +860,11 @@ a{color:inherit;}
 .grapes-grow{
   position:relative;
   /* Высота секции сверх первого видимого экрана = «дистанция» скраба.
-     230svh => всё видео проигрывается за ~1.3 высоты экрана прокрутки:
-     бодро, видно весь переход, без застревания на месте. */
-  height:230svh;
+     185svh => всё видео проигрывается за ~0.85 высоты экрана прокрутки:
+     коротко и бодро, но переход зелёный→спелый успевает считаться. */
+  height:185svh;
   background:
-    radial-gradient(120% 60% at 50% 0%,#fff 0,var(--paper) 60%,#f4ede1 100%);
+    radial-gradient(120% 60% at 50% 0%,var(--bg-cream) 0,var(--bg-main) 60%,var(--bg-olive) 100%);
 }
 .grapes-sticky{
   position:sticky;
@@ -843,7 +890,7 @@ a{color:inherit;}
   z-index:1;
   pointer-events:none;
   background:
-    linear-gradient(180deg,var(--paper) 0,rgba(255,253,247,0) 16%,rgba(255,253,247,0) 72%,rgba(40,36,30,.28) 100%);
+    linear-gradient(180deg,var(--bg-main) 0,rgba(244,247,239,0) 16%,rgba(244,247,239,0) 72%,rgba(40,36,30,.28) 100%);
 }
 .grapes-overlay{
   position:absolute;
