@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Jost:wght@300;400;500&amp;display=swap" rel="stylesheet" />
+<link rel="preload" as="image" href="assets/bride-groom-portrait.webp" fetchpriority="high" />
 <style>
 :root{
   --paper:#fffdf7;
@@ -29,7 +30,13 @@
 }
 
 *{box-sizing:border-box;}
-html{min-height:100%;scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:#efe8dd;}
+html{
+  min-height:100%;
+  scroll-behavior:smooth;
+  -webkit-text-size-adjust:100%;
+  background:#efe8dd;
+  -webkit-overflow-scrolling:touch;
+}
 body{
   margin:0;
   min-height:100%;
@@ -40,6 +47,9 @@ body{
   font-weight:300;
   line-height:1.65;
   overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
 }
 body.preopen{height:100svh;overflow:hidden;}
 button,input,textarea,select{font:inherit;}
@@ -516,8 +526,8 @@ a{color:inherit;}
   height:44px;
   color:var(--olive);
   filter:drop-shadow(0 12px 14px rgba(95,111,73,.18));
-  transform:translate3d(var(--grape-x,50%),var(--grape-y,0),0) translate(-50%,-50%);
-  transition:transform .14s linear;
+  transform:translate3d(-50%,-50%,0);
+  will-change:transform;
 }
 .program-grape svg{
   width:100%;
@@ -883,7 +893,7 @@ a{color:inherit;}
     <button class="envelope-button" id="openEnvelope" type="button" aria-label="Открыть приглашение">
       <div class="envelope-stage">
         <div class="pair-photo" aria-hidden="true">
-          <img src="assets/bride-groom-portrait.png" alt="Портрет пары" />
+          <img src="assets/bride-groom-portrait.webp" alt="Портрет пары" decoding="async" fetchpriority="high" />
           <div class="pair-copy">
             <h1 class="pair-names">Егор<br />&amp;<br />Анна</h1>
             <p>С радостью приглашаем вас разделить с нами самый счастливый день нашей жизни</p>
@@ -891,10 +901,10 @@ a{color:inherit;}
           </div>
         </div>
         <div class="envelope-half envelope-bottom" aria-hidden="true">
-          <img src="assets/envelope-bottom-flap.webp" alt="" />
+          <img src="assets/envelope-bottom-flap.webp" alt="" decoding="async" />
         </div>
         <div class="envelope-half envelope-top" aria-hidden="true">
-          <img src="assets/envelope-top-seal.webp" alt="" />
+          <img src="assets/envelope-top-seal.webp" alt="" decoding="async" />
           <div class="env-title">Приглашение<br />на свадьбу</div>
         </div>
         <div class="tap-note">нажмите,<br />чтобы открыть</div>
@@ -916,11 +926,11 @@ a{color:inherit;}
         <div class="count-cell"><div class="count-num" id="minutes">00</div><div class="count-label">минут</div></div>
         <div class="count-cell"><div class="count-num" id="seconds">00</div><div class="count-label">секунд</div></div>
       </div>
-      <div class="landscape-strip" aria-hidden="true"><img src="assets/vineyard-banner.png" alt="" /></div>
+      <div class="landscape-strip" aria-hidden="true"><img src="assets/vineyard-banner.webp" alt="" loading="lazy" decoding="async" /></div>
     </section>
 
     <section class="screen" id="venue">
-      <div class="venue-photo"><img src="assets/vineyard-banner.png" alt="Вид на место проведения" /></div>
+      <div class="venue-photo"><img src="assets/vineyard-banner.webp" alt="Вид на место проведения" loading="lazy" decoding="async" /></div>
       <div class="venue-card reveal">
         <h2 class="venue-name">Банкетный зал «Заберег»</h2>
         <p class="venue-address">Ленинградская область<br />41К-313, 30</p>
@@ -1029,8 +1039,8 @@ a{color:inherit;}
     <section class="screen compact" id="outfits">
       <h2 class="kicker center reveal">Примеры образов</h2>
       <div class="outfit-gallery reveal delay-1">
-        <div class="outfit-photo"><img src="assets/outfits-women-grid.png" alt="Примеры женских образов" /></div>
-        <div class="outfit-photo"><img src="assets/outfits-men-grid.png" alt="Примеры мужских образов" /></div>
+        <div class="outfit-photo"><img src="assets/outfits-women-grid.webp" alt="Примеры женских образов" loading="lazy" decoding="async" /></div>
+        <div class="outfit-photo"><img src="assets/outfits-men-grid.webp" alt="Примеры мужских образов" loading="lazy" decoding="async" /></div>
       </div>
     </section>
 
@@ -1071,7 +1081,7 @@ a{color:inherit;}
     </section>
 
     <section class="final-banner" id="final">
-      <img src="assets/vineyard-banner.png" alt="Пара в винограднике" />
+      <img src="assets/vineyard-banner.webp" alt="Пара в винограднике" loading="lazy" decoding="async" />
       <div class="final-copy reveal">
         <h2>Будем счастливы разделить этот день вместе с вами</h2>
         <div class="ornament"><svg viewBox="0 0 24 24" fill="none"><path d="M12 4c3 5 3 9 0 12-3-3-3-7 0-12Z" stroke="currentColor" stroke-width="1.4"/><path d="M7 10c4 1 6 3 6 7-4 0-6-3-6-7ZM17 10c-4 1-6 3-6 7 4 0 6-3 6-7Z" stroke="currentColor" stroke-width="1.4"/></svg></div>
@@ -1111,12 +1121,18 @@ a{color:inherit;}
     createParticles();
     startMusic();
 
+    // Разблокируем прокрутку сразу — пользователь может листать, пока
+    // конверт ещё доигрывает анимацию раскрытия.
+    body.classList.remove('preopen');
+    content.classList.add('ready');
+    revealVisible();
+
+    // До открытия контент был свёрнут (preopen/overflow:hidden), поэтому
+    // кэшированный масштаб SVG мог быть неверным — пересчитываем.
+    programPathLength = 0;
+    requestProgramMotion();
+
     window.setTimeout(() => music.classList.remove('hint'), 5200);
-    window.setTimeout(() => {
-      body.classList.remove('preopen');
-      content.classList.add('ready');
-      revealVisible();
-    }, reduceMotion ? 100 : 2600);
   }
   opener.addEventListener('click', openInvitation);
 
@@ -1157,28 +1173,41 @@ a{color:inherit;}
       });
     }, {threshold:.12, rootMargin:'0px 0px -6% 0px'});
     revealItems.forEach(el => observer.observe(el));
+    // IntersectionObserver сам отслеживает появление элементов — отдельные
+    // scroll/resize слушатели не нужны и только грузят каждый кадр прокрутки.
   }else{
+    // Нет поддержки IO — показываем всё сразу.
     revealItems.forEach(el => el.classList.add('in'));
   }
-  window.addEventListener('scroll', revealVisible, {passive:true});
-  window.addEventListener('resize', revealVisible, {passive:true});
 
   const programSection = document.getElementById('program');
   const programMotionPath = document.getElementById('programMotionPath');
   const programPathProgress = document.getElementById('programPathProgress');
   const programGrape = document.getElementById('programGrape');
   let programPathLength = 0;
+  let programScaleX = 1;
+  let programScaleY = 1;
+  let programLastProgress = -1;
   let programFrame = null;
 
   function clamp(value,min,max){
     return Math.min(max, Math.max(min, value));
   }
 
+  // Кэшируем длину пути и масштаб SVG: при скролле они не меняются,
+  // пересчёт нужен только при resize. Это убирает layout-thrashing
+  // (getBoundingClientRect/viewBox) из каждого кадра анимации.
   function setupProgramMotion(){
     if(!programMotionPath || !programPathProgress) return;
     programPathLength = programMotionPath.getTotalLength();
     programPathProgress.style.strokeDasharray = `${programPathLength}`;
     programPathProgress.style.strokeDashoffset = `${programPathLength}`;
+    const svg = programMotionPath.ownerSVGElement;
+    const box = svg.getBoundingClientRect();
+    const viewBox = svg.viewBox.baseVal;
+    programScaleX = box.width / viewBox.width;
+    programScaleY = box.height / viewBox.height;
+    programLastProgress = -1;
   }
 
   function updateProgramMotion(){
@@ -1190,16 +1219,16 @@ a{color:inherit;}
     const viewport = window.innerHeight || document.documentElement.clientHeight;
     const travel = Math.max(1, rect.height - viewport * .28);
     const progress = clamp((-rect.top + viewport * .03) / travel, 0, 1);
+
+    // Пропускаем кадр, если прогресс почти не изменился — не трогаем DOM зря.
+    if(Math.abs(progress - programLastProgress) < 0.0005) return;
+    programLastProgress = progress;
+
     const point = programMotionPath.getPointAtLength(programPathLength * progress);
-    const svg = programMotionPath.ownerSVGElement;
-    const box = svg.getBoundingClientRect();
-    const viewBox = svg.viewBox.baseVal;
-    const x = point.x * (box.width / viewBox.width);
-    const y = point.y * (box.height / viewBox.height);
+    const x = point.x * programScaleX;
+    const y = point.y * programScaleY;
     const tilt = Math.sin(progress * Math.PI * 5) * 8;
 
-    programGrape.style.setProperty('--grape-x', `${x}px`);
-    programGrape.style.setProperty('--grape-y', `${y}px`);
     programGrape.style.transform = `translate3d(${x}px,${y}px,0) translate(-50%,-50%) rotate(${tilt}deg)`;
     programPathProgress.style.strokeDashoffset = `${programPathLength * (1 - progress)}`;
   }
