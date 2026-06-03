@@ -812,9 +812,10 @@ a{color:inherit;}
 /* Виноград: покадровая анимация, привязанная к скроллу */
 .grapes-grow{
   position:relative;
-  /* Высота секции = «дистанция» прокрутки скраба. 300svh = ~2 экрана
-     прокрутки на проигрывание всех кадров, пока кадр закреплён. */
-  height:300svh;
+  /* Высота секции сверх первого видимого экрана = «дистанция» скраба.
+     230svh => всё видео проигрывается за ~1.3 высоты экрана прокрутки:
+     бодро, видно весь переход, без застревания на месте. */
+  height:230svh;
   background:
     radial-gradient(120% 60% at 50% 0%,#fff 0,var(--paper) 60%,#f4ede1 100%);
 }
@@ -822,29 +823,40 @@ a{color:inherit;}
   position:sticky;
   top:0;
   height:100svh;
-  display:grid;
-  place-items:center;
   overflow:hidden;
 }
 .grapes-canvas{
-  width:min(100%,var(--page));
-  height:auto;
-  max-height:78svh;
-  object-fit:contain;
-  /* Лёгкая виньетка под ivory-фон, чтобы белый фон видео сливался со страницей */
-  -webkit-mask-image:radial-gradient(120% 120% at 50% 50%,#000 62%,transparent 100%);
-          mask-image:radial-gradient(120% 120% at 50% 50%,#000 62%,transparent 100%);
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  /* cover: кадр заполняет весь экран, без пустых ivory-полей.
+     Виноград расположен горизонтально по центру — остаётся в кадре. */
+  object-fit:cover;
+  object-position:center;
+}
+/* Мягкие переходы к ivory сверху/снизу + читаемость подписи */
+.grapes-sticky::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg,var(--paper) 0,rgba(255,253,247,0) 16%,rgba(255,253,247,0) 72%,rgba(40,36,30,.28) 100%);
 }
 .grapes-overlay{
   position:absolute;
   left:24px;
   right:24px;
   bottom:max(40px,env(safe-area-inset-bottom));
+  z-index:2;
   text-align:center;
   pointer-events:none;
+  color:#fffdf8;
 }
 .grapes-caption{
-  margin:10px auto 0;
+  margin:8px auto 0;
   max-width:300px;
   font-size:23px;
   font-style:italic;
@@ -1311,21 +1323,46 @@ a{color:inherit;}
   // --- Виноград: покадровый скролл-скраб на canvas ---
   const grapesSection = document.getElementById('grapesGrow');
   const grapesCanvas = document.getElementById('grapesCanvas');
-  const GRAPES_FRAMES = 96;
+  const GRAPES_FRAMES = 69;
   function grapesFrameSrc(i){
     return `assets/grapes-seq/frame-${String(i).padStart(3,'0')}.webp`;
   }
 
   function initGrapes(){
     if(!grapesSection || !grapesCanvas) return;
-    const gctx = grapesCanvas.getContext('2d', {alpha:true});
+    const gctx = grapesCanvas.getContext('2d', {alpha:false});
+
+    // Внутренний буфер canvas подгоняем под его CSS-размер (×dpr для чёткости).
+    function fitCanvas(){
+      const r = grapesCanvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = Math.round(r.width * dpr);
+      const h = Math.round(r.height * dpr);
+      if(w && h && (grapesCanvas.width !== w || grapesCanvas.height !== h)){
+        grapesCanvas.width = w;
+        grapesCanvas.height = h;
+        return true; // размер изменился — нужно перерисовать
+      }
+      return false;
+    }
+
+    // Рисуем кадр по принципу object-fit:cover в буфер canvas.
+    function drawCover(img){
+      const cw = grapesCanvas.width, ch = grapesCanvas.height;
+      const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+      if(!cw || !ch || !iw || !ih) return;
+      const scale = Math.max(cw / iw, ch / ih);
+      const dw = iw * scale, dh = ih * scale;
+      gctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+    }
 
     // При reduced-motion скролл-скраб не нужен — рисуем один спелый кадр.
     if(reduceMotion){
       const still = new Image();
       still.decoding = 'async';
-      still.onload = () => gctx.drawImage(still, 0, 0, grapesCanvas.width, grapesCanvas.height);
+      still.onload = () => { fitCanvas(); drawCover(still); };
       still.src = grapesFrameSrc(GRAPES_FRAMES - 1);
+      window.addEventListener('resize', () => { fitCanvas(); drawCover(still); }, {passive:true});
       return null;
     }
 
@@ -1348,11 +1385,13 @@ a{color:inherit;}
       if(idx === lastDrawn) return;
       lastDrawn = idx;
       const img = frames[idx];
-      if(img) gctx.drawImage(img, 0, 0, grapesCanvas.width, grapesCanvas.height);
+      if(img) drawCover(img);
     }
 
     function update(){
       grapesFrame = null;
+      // Если буфер подстроился под новый размер — сбрасываем кэш кадра.
+      if(fitCanvas()) lastDrawn = -1;
       const rect = grapesSection.getBoundingClientRect();
       const viewport = window.innerHeight || document.documentElement.clientHeight;
       // Прогресс, пока секция проезжает через закреплённую зону.
