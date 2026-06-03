@@ -1,0 +1,14 @@
+{
+  "name": "wedding-postamt",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Luxury mobile wedding invitation website.",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node -c server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -570,6 +570,19 @@ a{color:inherit;}
   gap:14px;
   margin-top:38px;
 }
+.detail-item{
+  opacity:0;
+  transform:translateY(16px);
+  transition:opacity .55s var(--ease), transform .55s var(--ease);
+}
+.accordion.details-active .detail-item{
+  opacity:1;
+  transform:none;
+}
+.accordion.details-active .detail-item:nth-child(1){transition-delay:.02s;}
+.accordion.details-active .detail-item:nth-child(2){transition-delay:.18s;}
+.accordion.details-active .detail-item:nth-child(3){transition-delay:.34s;}
+.accordion.details-active .detail-item:nth-child(4){transition-delay:.5s;}
 .detail-toggle{
   width:100%;
   min-height:58px;
@@ -584,6 +597,7 @@ a{color:inherit;}
   background:rgba(255,255,255,.74);
   box-shadow:0 12px 28px rgba(65,55,39,.08);
   text-align:left;
+  cursor:default;
 }
 .detail-toggle svg{width:18px;height:18px;color:var(--olive);}
 .chev{transition:transform .25s var(--ease);}
@@ -593,7 +607,7 @@ a{color:inherit;}
   padding:0 16px;
   color:var(--soft);
   font-size:14px;
-  transition:max-height .35s var(--ease), padding .35s var(--ease);
+  transition:max-height .7s var(--ease), padding .7s var(--ease);
 }
 .detail-item.open .detail-panel{
   max-height:180px;
@@ -602,17 +616,53 @@ a{color:inherit;}
 .detail-item.open .chev{transform:rotate(180deg);}
 
 .swatches{
-  display:flex;
-  justify-content:center;
-  gap:13px;
-  margin:32px 0;
+  position:relative;
+  width:270px;
+  height:52px;
+  margin:32px auto;
+}
+.swatches.reveal{
+  opacity:1;
+  transform:none;
+}
+.swatches::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:var(--olive);
+  box-shadow:0 12px 26px rgba(95,111,73,.18);
+  transform:translate(-50%,-50%) scale(1);
+  transition:opacity .55s var(--ease), transform .75s var(--ease);
 }
 .swatch{
+  position:absolute;
+  left:50%;
+  top:2px;
   width:48px;
   height:48px;
   border-radius:50%;
   border:1px solid rgba(80,66,42,.1);
   box-shadow:inset 0 0 0 4px rgba(255,255,255,.3),0 10px 20px rgba(72,60,42,.11);
+  opacity:0;
+  transform:translateX(-50%) scale(.28);
+  transition:opacity .75s var(--ease), transform 1.05s var(--ease);
+}
+.swatch:nth-child(1){--spread:-104px;transition-delay:.05s;}
+.swatch:nth-child(2){--spread:-52px;transition-delay:.12s;}
+.swatch:nth-child(3){--spread:0px;transition-delay:.18s;}
+.swatch:nth-child(4){--spread:52px;transition-delay:.24s;}
+.swatch:nth-child(5){--spread:104px;transition-delay:.3s;}
+.swatches.in::before{
+  opacity:0;
+  transform:translate(-50%,-50%) scale(1.8);
+}
+.swatches.in .swatch{
+  opacity:1;
+  transform:translateX(calc(var(--spread) - 50%)) scale(1);
 }
 .avoid-card{
   margin-top:32px;
@@ -631,75 +681,27 @@ a{color:inherit;}
 .avoid-card ul{margin:0;padding-left:18px;color:var(--ink);font-size:14px;}
 .avoid-card li+li{margin-top:8px;}
 
-.outfit-group{margin-top:30px;}
-.outfit-title{
-  margin:0 0 14px;
-  color:var(--ink);
-  font-size:14px;
-  font-weight:400;
-  text-align:center;
-}
-.outfit-strip{
+.outfit-gallery{
   display:grid;
-  grid-auto-flow:column;
-  grid-auto-columns:94px;
-  gap:9px;
-  overflow-x:auto;
-  padding:0 0 10px;
-  scrollbar-width:none;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  margin:30px -10px 0;
 }
-.outfit-strip::-webkit-scrollbar{display:none;}
-.outfit-card{
-  height:154px;
+.outfit-photo{
+  position:relative;
+  aspect-ratio:1;
   overflow:hidden;
   border-radius:8px;
   border:1px solid var(--line);
   background:#eee5dc;
+  box-shadow:0 16px 36px rgba(72,60,42,.1);
 }
-.outfit-card img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-}
-.dots{
-  display:flex;
-  justify-content:center;
-  gap:6px;
-  margin-top:8px;
-}
-.dots span{
-  width:5px;
-  height:5px;
-  border-radius:50%;
-  background:#d8d0c2;
-}
-.dots span:first-child{background:var(--olive);}
-
-.gallery-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  grid-auto-rows:142px;
-  gap:7px;
-  margin:30px -6px 0;
-}
-.gallery-shot{
-  overflow:hidden;
-  border-radius:8px;
-  background:#e6ded2;
-}
-.gallery-shot.tall{grid-row:span 2;}
-.gallery-shot img{
+.outfit-photo img{
   width:100%;
   height:100%;
   object-fit:cover;
-  filter:saturate(.9) contrast(1.02);
+  filter:saturate(.94) contrast(1.02);
 }
-.gallery-shot:nth-child(1) img{object-position:center 38%;}
-.gallery-shot:nth-child(2) img{object-position:left center;}
-.gallery-shot:nth-child(3) img{object-position:right center;}
-.gallery-shot:nth-child(4) img{object-position:center bottom;}
-.gallery-shot:nth-child(5) img{object-position:center 48%;}
-.gallery-shot:nth-child(6) img{object-position:62% center;}
 
 .form{
   display:grid;
@@ -966,8 +968,8 @@ a{color:inherit;}
     <section class="screen compact" id="details">
       <div class="vine top-right" aria-hidden="true"><svg viewBox="0 0 120 120" fill="none"><path d="M17 100C52 77 78 46 104 15" stroke="currentColor" stroke-width="1.2"/><path d="M42 76c-17-2-23-12-24-25 16 0 27 8 24 25ZM66 53c-16-5-20-16-17-28 15 3 24 14 17 28ZM83 34c-7-15-2-25 9-32 8 13 5 26-9 32Z" fill="currentColor" opacity=".55"/></svg></div>
       <h2 class="title center reveal">Детали</h2>
-      <div class="accordion reveal delay-1">
-        <div class="detail-item open">
+      <div class="accordion reveal delay-1" id="detailsAccordion">
+        <div class="detail-item">
           <button class="detail-toggle" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 16h16M5 16v3M19 16v3M7 13h10l2 3H5l2-3Z"/></svg>
             <span>Трансфер</span>
@@ -1026,41 +1028,9 @@ a{color:inherit;}
 
     <section class="screen compact" id="outfits">
       <h2 class="kicker center reveal">Примеры образов</h2>
-      <div class="outfit-group women reveal delay-1">
-        <h3 class="outfit-title">Для женщин</h3>
-        <div class="outfit-strip">
-          <div class="outfit-card"><img src="assets/outfits/women-1.jpg" alt="Пример женского образа" /></div>
-          <div class="outfit-card"><img src="assets/outfits/women-2.jpg" alt="Пример женского образа" /></div>
-          <div class="outfit-card"><img src="assets/outfits/women-3.jpg" alt="Пример женского образа" /></div>
-          <div class="outfit-card"><img src="assets/outfits/women-4.jpg" alt="Пример женского образа" /></div>
-          <div class="outfit-card"><img src="assets/outfits/women-5.jpg" alt="Пример женского образа" /></div>
-          <div class="outfit-card"><img src="assets/outfits/women-6.jpg" alt="Пример женского образа" /></div>
-        </div>
-        <div class="dots" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-      </div>
-      <div class="outfit-group men reveal delay-2">
-        <h3 class="outfit-title">Для мужчин</h3>
-        <div class="outfit-strip">
-          <div class="outfit-card"><img src="assets/outfits/men-1.jpg" alt="Пример мужского образа" /></div>
-          <div class="outfit-card"><img src="assets/outfits/men-2.jpg" alt="Пример мужского образа" /></div>
-          <div class="outfit-card"><img src="assets/outfits/men-3.jpg" alt="Пример мужского образа" /></div>
-          <div class="outfit-card"><img src="assets/outfits/men-4.jpg" alt="Пример мужского образа" /></div>
-          <div class="outfit-card"><img src="assets/outfits/men-5.jpg" alt="Пример мужского образа" /></div>
-          <div class="outfit-card"><img src="assets/outfits/men-6.jpg" alt="Пример мужского образа" /></div>
-        </div>
-        <div class="dots" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-      </div>
-    </section>
-
-    <section class="screen compact" id="gallery">
-      <h2 class="kicker center reveal">Галерея пары</h2>
-      <div class="gallery-grid reveal delay-1">
-        <div class="gallery-shot tall"><img src="assets/bride-groom-portrait.png" alt="Фото пары" /></div>
-        <div class="gallery-shot"><img src="assets/vineyard-banner.png" alt="Фото места" /></div>
-        <div class="gallery-shot"><img src="assets/bride-groom-portrait.png" alt="Фото пары" /></div>
-        <div class="gallery-shot"><img src="assets/vineyard-banner.png" alt="Фото места" /></div>
-        <div class="gallery-shot tall"><img src="assets/bride-groom-portrait.png" alt="Фото пары" /></div>
-        <div class="gallery-shot"><img src="assets/vineyard-banner.png" alt="Фото места" /></div>
+      <div class="outfit-gallery reveal delay-1">
+        <div class="outfit-photo"><img src="assets/outfits-women-grid.png" alt="Примеры женских образов" /></div>
+        <div class="outfit-photo"><img src="assets/outfits-men-grid.png" alt="Примеры мужских образов" /></div>
       </div>
     </section>
 
@@ -1270,12 +1240,32 @@ a{color:inherit;}
   tick();
   window.setInterval(tick, 1000);
 
-  document.querySelectorAll('.detail-toggle').forEach(button => {
-    button.addEventListener('click', () => {
-      const item = button.closest('.detail-item');
-      item.classList.toggle('open');
+  const detailsAccordion = document.getElementById('detailsAccordion');
+  const detailItems = detailsAccordion ? Array.from(detailsAccordion.querySelectorAll('.detail-item')) : [];
+  let detailsOpened = false;
+
+  function openDetails(){
+    if(detailsOpened || !detailsAccordion) return;
+    detailsOpened = true;
+    detailsAccordion.classList.add('details-active');
+    detailItems.forEach((item,index) => {
+      window.setTimeout(() => item.classList.add('open'), reduceMotion ? 0 : 170 * index);
     });
-  });
+  }
+
+  if(detailsAccordion && 'IntersectionObserver' in window){
+    const detailsObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          openDetails();
+          detailsObserver.disconnect();
+        }
+      });
+    }, {threshold:.32, rootMargin:'0px 0px -18% 0px'});
+    detailsObserver.observe(detailsAccordion);
+  }else{
+    openDetails();
+  }
 
   const form = document.getElementById('rsvpForm');
   const thanks = document.getElementById('rsvpThanks');
