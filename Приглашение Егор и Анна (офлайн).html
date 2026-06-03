@@ -822,29 +822,6 @@ a{color:inherit;}
   font-size:14px;
 }
 
-.thanks-icon{
-  width:66px;
-  height:66px;
-  margin:96px auto 28px;
-  border:1px solid var(--olive);
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  color:var(--olive);
-}
-.thanks-icon svg{width:32px;height:32px;}
-.thanks-title{
-  margin:0;
-  font-family:var(--serif);
-  font-size:39px;
-  font-weight:400;
-}
-.heart-line{
-  margin-top:32px;
-  color:var(--olive);
-  font-family:var(--serif);
-  font-size:27px;
-}
 .rsvp-thanks{
   display:none;
   margin-top:20px;
@@ -937,8 +914,9 @@ a{color:inherit;}
 .final-copy{
   position:relative;
   z-index:1;
-  width:62%;
-  margin-left:auto;
+  width:100%;
+  max-width:330px;
+  margin:0 auto;
   text-align:center;
   text-shadow:0 4px 20px rgba(0,0,0,.28);
 }
@@ -1189,15 +1167,6 @@ a{color:inherit;}
       </div>
     </section>
 
-    <section class="screen center" id="thanks">
-      <div class="vine top-right" aria-hidden="true"><svg viewBox="0 0 120 120" fill="none"><path d="M17 100C52 77 78 46 104 15" stroke="currentColor" stroke-width="1.2"/><path d="M42 76c-17-2-23-12-24-25 16 0 27 8 24 25ZM66 53c-16-5-20-16-17-28 15 3 24 14 17 28ZM83 34c-7-15-2-25 9-32 8 13 5 26-9 32Z" fill="currentColor" opacity=".55"/></svg></div>
-      <div class="vine bottom-left" aria-hidden="true"><svg viewBox="0 0 120 120" fill="none"><path d="M17 100C52 77 78 46 104 15" stroke="currentColor" stroke-width="1.2"/><path d="M42 76c-17-2-23-12-24-25 16 0 27 8 24 25ZM66 53c-16-5-20-16-17-28 15 3 24 14 17 28ZM83 34c-7-15-2-25 9-32 8 13 5 26-9 32Z" fill="currentColor" opacity=".55"/></svg></div>
-      <div class="thanks-icon reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 12 4 4L19 6"/></svg></div>
-      <h2 class="thanks-title reveal delay-1">Спасибо!</h2>
-      <p class="text reveal delay-2">Мы очень рады, что вы будете с нами в этот особенный день!</p>
-      <div class="heart-line reveal delay-3">♡</div>
-    </section>
-
     <section class="final-banner" id="final">
       <img src="assets/vineyard-banner.webp" alt="Пара в винограднике" loading="lazy" decoding="async" />
       <div class="final-copy reveal">
@@ -1338,8 +1307,13 @@ a{color:inherit;}
 
     const rect = programSection.getBoundingClientRect();
     const viewport = window.innerHeight || document.documentElement.clientHeight;
-    const travel = Math.max(1, rect.height - viewport * .28);
-    const progress = clamp((-rect.top + viewport * .03) / travel, 0, 1);
+    // Прогресс привязан ко всему времени, что секция видна на экране:
+    // 0 — её верх касается низа вьюпорта, 1 — её низ уходит за верх.
+    // Так гроздь движется ровно по пальцу на всём протяжении прокрутки,
+    // без отставания (раньше она финишировала только когда секция почти
+    // целиком ушла наверх).
+    const travel = Math.max(1, viewport + rect.height);
+    const progress = clamp((viewport - rect.top) / travel, 0, 1);
 
     // Пропускаем кадр, если прогресс почти не изменился — не трогаем DOM зря.
     if(Math.abs(progress - programLastProgress) < 0.0005) return;
