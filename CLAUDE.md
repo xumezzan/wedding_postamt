@@ -2,9 +2,9 @@
 
 ## Project Overview
 
-This project is a luxury mobile-first wedding invitation website for Egor and Anna. It is built as a static invitation page with a small Node.js HTTP server so it can be deployed on Railway.
+This project is a luxury mobile-first wedding invitation website for Сарвар and Ёра (Sarvar and Yora). It is built as a static invitation page with a small Node.js HTTP server so it can be deployed on Railway. (The HTML filenames still read "Егор и Анна" from the original couple and are intentionally not renamed, since `server.js` and Railway serve those exact paths.)
 
-The first user-facing screen is a fullscreen ivory envelope. After the user taps the wax seal area, the envelope opens with a cinematic split animation: the top part moves upward, the lower part moves downward, a bride-and-groom portrait is revealed, gold particles appear, and soft generated piano music starts after the interaction.
+The first user-facing screen is a fullscreen ivory envelope. After the user taps the wax seal area, the envelope opens with a cinematic split animation: the top part moves upward, the lower part moves downward, a bride-and-groom portrait is revealed, gold particles appear, and soft background music starts after the interaction.
 
 The invitation then continues in this order:
 
@@ -90,7 +90,7 @@ Runtime behavior:
 All core frontend code is inside the main HTML file:
 
 - CSS defines the mobile-first visual system, envelope layout, scroll sections, form UI, animations, and responsive constraints.
-- JavaScript handles envelope opening, particles, reveal-on-scroll effects, countdown timer, details auto-opening, RSVP localStorage save, generated piano audio, and program grape motion.
+- JavaScript handles envelope opening, particles, reveal-on-scroll effects, countdown timer, details auto-opening, RSVP localStorage save, background music playback, and program grape motion.
 
 Key frontend behaviors:
 
@@ -102,8 +102,8 @@ Key frontend behaviors:
   - `getPointAtLength()`
 - Details auto-open via `IntersectionObserver` on `#detailsAccordion`.
 - Dress-code swatches use CSS transitions from one central dot to a spread-out palette.
-- RSVP stores form data in `localStorage` under `wedding-rsvp-egor-anna`.
-- Piano music is generated with Web Audio API after user interaction.
+- RSVP stores form data in `localStorage` under `wedding-rsvp-sarvar-yora`.
+- Background music plays the track `assets/ti-amo.mp3` (Umberto Tozzi — Ti Amo) via a looped `<audio>` element, started with a fade-in after user interaction.
 
 ## Local Development
 
