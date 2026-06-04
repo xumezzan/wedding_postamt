@@ -83,7 +83,16 @@ body{
 body::after{
   content:"";
   position:fixed;
-  inset:0;
+  /* Стабильная высота вместо inset:0. inset:0 тянул слой по ТЕКУЩЕМУ вьюпорту,
+     и во встроенном браузере Telegram сворачивающийся тулбар менял высоту на
+     каждом кадре скролла → полноэкранная перерисовка градиента (в обычном
+     браузере такого нет — поэтому там скролл плавный). 100lvh не зависит от
+     тулбара, слой не пересчитывается. */
+  top:0;
+  left:0;
+  right:0;
+  height:100vh;   /* фолбэк для WebView без lvh */
+  height:100lvh;
   z-index:-1;
   pointer-events:none;
   background:
@@ -108,7 +117,11 @@ body::after{
 body::before{
   content:"";
   position:fixed;
-  inset:0;
+  top:0;            /* та же стабилизация высоты, что и у ::after (тулбар Telegram) */
+  left:0;
+  right:0;
+  height:100vh;
+  height:100lvh;
   z-index:0;
   pointer-events:none;
   opacity:.05;
@@ -1649,8 +1662,17 @@ a{color:inherit;}
 
   setupProgramMotion();
   window.addEventListener('scroll', requestProgramMotion, {passive:true});
+  // В in-app браузере Telegram сворачивающийся тулбар шлёт resize с изменением
+  // только ВЫСОТЫ на каждом кадре скролла. Дорогой пересчёт длины пути/масштаба
+  // нужен лишь при смене ШИРИНЫ (поворот, реальный ресайз) — иначе он молотит
+  // каждый кадр и добавляет рывки. На height-only resize только дёшево
+  // перепозиционируем гроздь.
+  let programLastVW = window.innerWidth;
   window.addEventListener('resize', () => {
-    programPathLength = 0;
+    if(window.innerWidth !== programLastVW){
+      programLastVW = window.innerWidth;
+      programPathLength = 0;
+    }
     requestProgramMotion();
   }, {passive:true});
   // Видимость секции программы включает/выключает per-frame расчёты.
@@ -1794,7 +1816,14 @@ a{color:inherit;}
     }
 
     window.addEventListener('scroll', requestUpdate, {passive:true});
-    window.addEventListener('resize', requestUpdate, {passive:true});
+    // Тулбар Telegram шлёт height-only resize на скролле; canvas высотой 100svh
+    // при этом стабилен, перерисовка по высоте не нужна. Полный сброс кадра —
+    // только при реальной смене ширины.
+    let grapesLastVW = window.innerWidth;
+    window.addEventListener('resize', () => {
+      if(window.innerWidth !== grapesLastVW){ grapesLastVW = window.innerWidth; lastDrawn = -1; }
+      requestUpdate();
+    }, {passive:true});
 
     // Видимость секции винограда гейтит весь скролл-скраб: пока она далеко,
     // ни getBoundingClientRect, ни drawImage не выполняются на скролле.
