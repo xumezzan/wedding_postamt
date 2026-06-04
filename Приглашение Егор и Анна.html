@@ -667,6 +667,16 @@ a{color:inherit;}
   -webkit-mask-image:linear-gradient(270deg,#000 66%,transparent 100%);
           mask-image:linear-gradient(270deg,#000 66%,transparent 100%);
 }
+/* Mirror vine on the left edge of the section. */
+.date-vine.left{right:auto;left:0;}
+.date-vine.left img{
+  right:auto;
+  left:0;
+  object-position:left top;
+  /* Feather the inner (right) edge instead. */
+  -webkit-mask-image:linear-gradient(90deg,#000 66%,transparent 100%);
+          mask-image:linear-gradient(90deg,#000 66%,transparent 100%);
+}
 #date > :not(.date-bg):not(.date-vine):not(.landscape-strip){position:relative;z-index:2;}
 
 .venue-photo{
@@ -1275,6 +1285,7 @@ a{color:inherit;}
 
     <section class="screen center" id="date">
       <div class="date-bg" aria-hidden="true"><img src="assets/vineyard-banner.webp" alt="" loading="lazy" decoding="async" /></div>
+      <div class="date-vine left" aria-hidden="true"><img src="assets/grape-vine-left.webp?v=1" alt="" loading="lazy" decoding="async" /></div>
       <div class="date-vine" aria-hidden="true"><img src="assets/grape-vine-right.webp?v=3" alt="" loading="lazy" decoding="async" /></div>
       <div class="date-number reveal">20</div>
       <div class="date-month reveal delay-1">августа</div>
