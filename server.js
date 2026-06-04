@@ -17,7 +17,8 @@ const contentTypes = {
   '.jpeg': 'image/jpeg',
   '.webp': 'image/webp',
   '.svg': 'image/svg+xml; charset=utf-8',
-  '.ico': 'image/x-icon'
+  '.ico': 'image/x-icon',
+  '.mp3': 'audio/mpeg'
 };
 
 function send(res, status, body, type = 'text/plain; charset=utf-8') {
