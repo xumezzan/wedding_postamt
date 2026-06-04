@@ -146,27 +146,25 @@ a{color:inherit;}
   background:transparent;
 }
 .screen.compact{min-height:auto;padding-top:78px;padding-bottom:78px;}
-/* Decorative grape corners. Each asset is a full mobile-frame (9:16) watercolour
-   overlay with grapes baked into the corners and a transparent centre, so one
-   image pins decoration to the top + opposite-bottom corner of its section.
-   Anchored to the section's full width at the top with the natural aspect ratio
-   kept — no stretching, no cropping of the edge-touching grapes. */
+/* Decorative grape corners. Each watercolour piece is a tight crop of a single
+   corner cluster, pinned small into a section corner so it stays in the margins
+   and never covers the headings, text, photos or form fields. */
 .grape-accent{
   position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:auto;
+  inset:0;
   z-index:4;
   pointer-events:none;
   user-select:none;
-  opacity:.92;
 }
 .grape-accent img{
-  display:block;
-  width:100%;
+  position:absolute;
   height:auto;
+  opacity:.9;
 }
+.g-top{top:0;}
+.g-bot{bottom:0;}
+.g-left{left:0;}
+.g-right{right:0;}
 .has-grape > :not(.grape-accent):not(.date-bg){
   position:relative;
   z-index:2;
@@ -1270,7 +1268,7 @@ a{color:inherit;}
 
     <section class="screen center has-grape" id="date">
       <div class="date-bg" aria-hidden="true"><img src="assets/vineyard-banner.webp" alt="" loading="lazy" decoding="async" /></div>
-      <div class="grape-accent accent-date" aria-hidden="true"><img src="assets/grape-frame-tr-1.webp?v=2" alt="" loading="lazy" decoding="async" /></div>
+      <div class="grape-accent accent-date" aria-hidden="true"><img class="g-top g-right" style="width:22%" src="assets/grape-frame-tr-1-a.webp?v=3" alt="" loading="lazy" decoding="async" /><img class="g-bot g-left" style="width:19%" src="assets/grape-frame-tr-1-b.webp?v=3" alt="" loading="lazy" decoding="async" /></div>
       <div class="date-number reveal">20</div>
       <div class="date-month reveal delay-1">августа</div>
       <div class="date-year reveal delay-2">2026</div>
@@ -1285,7 +1283,7 @@ a{color:inherit;}
     </section>
 
     <section class="screen has-grape" id="venue">
-      <div class="grape-accent accent-venue" aria-hidden="true"><img src="assets/grape-frame-tr-4.webp?v=2" alt="" loading="lazy" decoding="async" /></div>
+      <div class="grape-accent accent-venue" aria-hidden="true"><img class="g-top g-right" style="width:17%" src="assets/grape-frame-tr-4-a.webp?v=3" alt="" loading="lazy" decoding="async" /><img class="g-bot g-left" style="width:20%" src="assets/grape-frame-tr-4-b.webp?v=3" alt="" loading="lazy" decoding="async" /></div>
       <div class="venue-card reveal">
         <h2 class="venue-name">Банкетный зал «Заберег»</h2>
         <p class="venue-address">Ленинградская область<br />41К-313, 30</p>
@@ -1300,7 +1298,7 @@ a{color:inherit;}
     </section>
 
     <section class="screen center has-grape" id="program">
-      <div class="grape-accent accent-program" aria-hidden="true"><img src="assets/grape-frame-tr-2.webp?v=2" alt="" loading="lazy" decoding="async" /></div>
+      <div class="grape-accent accent-program" aria-hidden="true"><img class="g-top g-right" style="width:23%" src="assets/grape-frame-tr-2-a.webp?v=3" alt="" loading="lazy" decoding="async" /><img class="g-bot g-left" style="width:21%" src="assets/grape-frame-tr-2-b.webp?v=3" alt="" loading="lazy" decoding="async" /></div>
       <h2 class="title reveal">Программа дня</h2>
       <div class="program-list reveal delay-1">
         <svg class="program-curve" viewBox="0 0 320 548" preserveAspectRatio="none" aria-hidden="true">
@@ -1331,7 +1329,7 @@ a{color:inherit;}
     </section>
 
     <section class="screen compact has-grape" id="details">
-      <div class="grape-accent accent-details" aria-hidden="true"><img src="assets/grape-frame-tr-3.webp?v=2" alt="" loading="lazy" decoding="async" /></div>
+      <div class="grape-accent accent-details" aria-hidden="true"><img class="g-top g-right" style="width:22%" src="assets/grape-frame-tr-3-a.webp?v=3" alt="" loading="lazy" decoding="async" /><img class="g-bot g-left" style="width:16%" src="assets/grape-frame-tr-3-b.webp?v=3" alt="" loading="lazy" decoding="async" /></div>
       <h2 class="title center reveal">Детали</h2>
       <div class="details-grid reveal delay-1" id="detailsAccordion">
         <div class="detail-item detail-left">
@@ -1366,7 +1364,7 @@ a{color:inherit;}
     </section>
 
     <section class="screen compact center has-grape" id="dress">
-      <div class="grape-accent accent-dress" aria-hidden="true"><img src="assets/grape-frame-diag.webp?v=2" alt="" loading="lazy" decoding="async" /></div>
+      <div class="grape-accent accent-dress" aria-hidden="true"><img class="g-top g-left" style="width:23%" src="assets/grape-frame-diag-a.webp?v=3" alt="" loading="lazy" decoding="async" /><img class="g-bot g-right" style="width:24%" src="assets/grape-frame-diag-b.webp?v=3" alt="" loading="lazy" decoding="async" /></div>
       <h2 class="title reveal">Dress code</h2>
       <div class="swatches reveal delay-1">
         <span class="swatch" style="background:#e9dccb;"></span>
@@ -1388,7 +1386,7 @@ a{color:inherit;}
     </section>
 
     <section class="screen compact has-grape" id="outfits">
-      <div class="grape-accent accent-outfits" aria-hidden="true"><img src="assets/grape-frame-tr-4.webp?v=2" alt="" loading="lazy" decoding="async" /></div>
+      <div class="grape-accent accent-outfits" aria-hidden="true"><img class="g-top g-right" style="width:16%" src="assets/grape-frame-tr-4-a.webp?v=3" alt="" loading="lazy" decoding="async" /><img class="g-bot g-left" style="width:18%" src="assets/grape-frame-tr-4-b.webp?v=3" alt="" loading="lazy" decoding="async" /></div>
       <h2 class="kicker center reveal">Примеры образов</h2>
       <div class="outfit-gallery reveal delay-1" id="outfitGallery">
         <div class="outfit-photo"><img src="assets/outfits-women-grid.webp?v=2" alt="Примеры женских образов" loading="lazy" decoding="async" /></div>
@@ -1409,7 +1407,7 @@ a{color:inherit;}
     </section>
 
     <section class="screen compact has-grape" id="rsvp">
-      <div class="grape-accent accent-rsvp" aria-hidden="true"><img src="assets/grape-frame-tr-1.webp?v=2" alt="" loading="lazy" decoding="async" /></div>
+      <div class="grape-accent accent-rsvp" aria-hidden="true"><img class="g-top g-right" style="width:18%" src="assets/grape-frame-tr-1-a.webp?v=3" alt="" loading="lazy" decoding="async" /></div>
       <h2 class="title center reveal">Подтвердите<br />свое присутствие</h2>
       <form class="form reveal delay-1" id="rsvpForm">
         <div class="field-wrap">
