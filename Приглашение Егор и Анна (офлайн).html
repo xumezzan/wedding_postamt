@@ -793,11 +793,32 @@ a{color:inherit;}
   object-fit:cover;
   filter:saturate(.94) contrast(1.02);
 }
+.outfit-nav{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  margin-top:14px;
+}
+.outfit-arrow{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(95,111,73,.22);
+  border-radius:50%;
+  color:var(--olive);
+  background:rgba(255,253,247,.9);
+  box-shadow:0 10px 24px rgba(72,60,42,.1);
+  transition:transform .2s var(--ease), opacity .2s var(--ease);
+}
+.outfit-arrow svg{width:18px;height:18px;}
+.outfit-arrow:not(:disabled):active{transform:scale(.92);}
+.outfit-arrow:disabled{opacity:.32;box-shadow:none;cursor:default;}
 .outfit-dots{
   display:flex;
   justify-content:center;
   gap:8px;
-  margin-top:8px;
 }
 .outfit-dot{
   width:7px;
@@ -1187,9 +1208,17 @@ a{color:inherit;}
         <div class="outfit-photo"><img src="assets/outfits-women-grid.webp?v=2" alt="Примеры женских образов" loading="lazy" decoding="async" /></div>
         <div class="outfit-photo"><img src="assets/outfits-men-grid.webp?v=2" alt="Примеры мужских образов" loading="lazy" decoding="async" /></div>
       </div>
-      <div class="outfit-dots reveal delay-2" id="outfitDots" aria-hidden="true">
-        <span class="outfit-dot is-active"></span>
-        <span class="outfit-dot"></span>
+      <div class="outfit-nav reveal delay-2">
+        <button class="outfit-arrow" id="outfitPrev" type="button" aria-label="Предыдущий образ">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <div class="outfit-dots" id="outfitDots" aria-hidden="true">
+          <span class="outfit-dot is-active"></span>
+          <span class="outfit-dot"></span>
+        </div>
+        <button class="outfit-arrow" id="outfitNext" type="button" aria-label="Следующий образ">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
       </div>
     </section>
 
@@ -1612,18 +1641,18 @@ a{color:inherit;}
     openDetails();
   }
 
-  // Карусель образов: точка-индикатор отражает активный слайд при свайпе.
-  // Слушатель висит на самом контейнере галереи (не на window) и срабатывает
-  // только во время горизонтального свайпа по ней — дёшево и rAF-сглажено.
+  // Карусель образов: стрелки ← → листают к соседнему слайду, точка-индикатор
+  // отражает активный слайд. Скролл-слушатель висит на самом контейнере
+  // галереи (не на window), срабатывает только при свайпе — дёшево и rAF-сглажено.
   const outfitGallery = document.getElementById('outfitGallery');
   const outfitDots = document.getElementById('outfitDots');
-  if(outfitGallery && outfitDots){
-    const odots = Array.from(outfitDots.children);
-    let outfitRaf = null;
-    function syncOutfitDots(){
-      outfitRaf = null;
+  const outfitPrev = document.getElementById('outfitPrev');
+  const outfitNext = document.getElementById('outfitNext');
+  if(outfitGallery){
+    const odots = outfitDots ? Array.from(outfitDots.children) : [];
+    // Активный слайд = тот, чей центр ближе всего к центру вьюпорта галереи.
+    function activeOutfit(){
       const slides = outfitGallery.children;
-      if(!slides.length) return;
       const mid = outfitGallery.scrollLeft + outfitGallery.clientWidth / 2;
       let active = 0, best = Infinity;
       for(let i = 0; i < slides.length; i++){
@@ -1631,12 +1660,34 @@ a{color:inherit;}
         const dist = Math.abs(center - mid);
         if(dist < best){ best = dist; active = i; }
       }
+      return active;
+    }
+    let outfitRaf = null;
+    function syncOutfit(){
+      outfitRaf = null;
+      const slides = outfitGallery.children;
+      if(!slides.length) return;
+      const active = activeOutfit();
       odots.forEach((dot, i) => dot.classList.toggle('is-active', i === active));
+      if(outfitPrev) outfitPrev.disabled = active === 0;
+      if(outfitNext) outfitNext.disabled = active === slides.length - 1;
+    }
+    // Прокрутка к соседнему слайду по клику на стрелку.
+    function goOutfit(dir){
+      const slides = outfitGallery.children;
+      const target = Math.max(0, Math.min(slides.length - 1, activeOutfit() + dir));
+      const t = slides[target];
+      if(!t) return;
+      const left = t.offsetLeft + t.offsetWidth / 2 - outfitGallery.clientWidth / 2;
+      outfitGallery.scrollTo({left, behavior: reduceMotion ? 'auto' : 'smooth'});
     }
     outfitGallery.addEventListener('scroll', () => {
       if(outfitRaf) return;
-      outfitRaf = window.requestAnimationFrame(syncOutfitDots);
+      outfitRaf = window.requestAnimationFrame(syncOutfit);
     }, {passive:true});
+    if(outfitPrev) outfitPrev.addEventListener('click', () => goOutfit(-1));
+    if(outfitNext) outfitNext.addEventListener('click', () => goOutfit(1));
+    syncOutfit(); // начальное состояние: первая точка активна, стрелка «назад» заблокирована
   }
 
   const form = document.getElementById('rsvpForm');
