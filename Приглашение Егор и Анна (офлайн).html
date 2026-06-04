@@ -637,37 +637,35 @@ a{color:inherit;}
     radial-gradient(120% 90% at 50% 38%,rgba(244,247,239,.92) 0,rgba(244,247,239,.72) 46%,rgba(244,247,239,.55) 100%),
     linear-gradient(180deg,var(--bg-main) 0,rgba(244,247,239,.4) 30%,rgba(244,247,239,.2) 70%,var(--bg-main) 100%);
 }
-/* Slim watercolour grape vines cascading down each edge. The art is tiled at a
-   fixed width (background-repeat-y) so the grapes stay a delicate, consistent
-   size no matter how tall the section is, and the inner edge is feathered so the
-   vine melts into the vineyard background. */
+/* One full watercolour grape vine down each edge — shown once at full length
+   (no cropping, no tiling). The inner edge is feathered so the vine melts into
+   the vineyard background. */
 .date-vine{
   position:absolute;
   top:0;
   right:0;
   bottom:0;
-  width:118px;
+  width:130px;
   z-index:1;
   pointer-events:none;
   background-image:url('assets/grape-vine-right.webp?v=3');
-  background-repeat:repeat-y;
+  background-repeat:no-repeat;
   background-position:right top;
-  background-size:118px auto;
+  background-size:100% 100%;
   filter:saturate(1.04) contrast(1.03);
-  -webkit-mask-image:linear-gradient(270deg,#000 60%,transparent 100%);
-          mask-image:linear-gradient(270deg,#000 60%,transparent 100%);
+  -webkit-mask-image:linear-gradient(270deg,#000 58%,transparent 100%);
+          mask-image:linear-gradient(270deg,#000 58%,transparent 100%);
 }
 .date-vine.left{
   right:auto;
   left:0;
   background-image:url('assets/grape-vine-left.webp?v=1');
   background-position:left top;
-  -webkit-mask-image:linear-gradient(90deg,#000 60%,transparent 100%);
-          mask-image:linear-gradient(90deg,#000 60%,transparent 100%);
+  -webkit-mask-image:linear-gradient(90deg,#000 58%,transparent 100%);
+          mask-image:linear-gradient(90deg,#000 58%,transparent 100%);
 }
-.date-vine img{display:none;}
 @media (min-width:560px){
-  .date-vine{width:150px;background-size:150px auto;}
+  .date-vine{width:160px;}
 }
 #date > :not(.date-bg):not(.date-vine):not(.landscape-strip){position:relative;z-index:2;}
 
@@ -1277,8 +1275,8 @@ a{color:inherit;}
 
     <section class="screen center" id="date">
       <div class="date-bg" aria-hidden="true"><img src="assets/vineyard-banner.webp" alt="" loading="lazy" decoding="async" /></div>
-      <div class="date-vine left" aria-hidden="true"><img src="assets/grape-vine-left.webp?v=1" alt="" loading="lazy" decoding="async" /></div>
-      <div class="date-vine" aria-hidden="true"><img src="assets/grape-vine-right.webp?v=3" alt="" loading="lazy" decoding="async" /></div>
+      <div class="date-vine left" aria-hidden="true"></div>
+      <div class="date-vine" aria-hidden="true"></div>
       <div class="date-number reveal">20</div>
       <div class="date-month reveal delay-1">августа</div>
       <div class="date-year reveal delay-2">2026</div>
