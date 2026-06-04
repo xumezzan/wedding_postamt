@@ -649,7 +649,8 @@ a{color:inherit;}
   overflow:hidden;
 }
 /* A continuous watercolour grape vine cascading down the right edge. The art
-   sits on a cream field, so multiply drops the background and keeps the vine. */
+   sits on a cream field; multiply lets the cream blend invisibly into the page
+   while the grapes and leaves darken through — no box and no pale seam. */
 .date-vine img{
   position:absolute;
   top:0;
@@ -661,14 +662,10 @@ a{color:inherit;}
   object-position:right top;
   mix-blend-mode:multiply;
   opacity:1;
-  filter:saturate(1.02) contrast(1.03);
-}
-/* Soften the inner (left) edge so the vine melts into the page. */
-.date-vine::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(270deg,transparent 70%,rgba(244,247,239,.85) 100%);
+  filter:saturate(1.12) contrast(1.12);
+  /* Feather the inner edge so the vine melts into the page. */
+  -webkit-mask-image:linear-gradient(270deg,#000 74%,transparent 100%);
+          mask-image:linear-gradient(270deg,#000 74%,transparent 100%);
 }
 #date > :not(.date-bg):not(.date-vine):not(.landscape-strip){position:relative;z-index:2;}
 
@@ -1278,7 +1275,7 @@ a{color:inherit;}
 
     <section class="screen center" id="date">
       <div class="date-bg" aria-hidden="true"><img src="assets/vineyard-banner.webp" alt="" loading="lazy" decoding="async" /></div>
-      <div class="date-vine" aria-hidden="true"><img src="assets/grape-vine-right.webp" alt="" loading="lazy" decoding="async" /></div>
+      <div class="date-vine" aria-hidden="true"><img src="assets/grape-vine-right.webp?v=2" alt="" loading="lazy" decoding="async" /></div>
       <div class="date-number reveal">20</div>
       <div class="date-month reveal delay-1">августа</div>
       <div class="date-year reveal delay-2">2026</div>
