@@ -637,45 +637,37 @@ a{color:inherit;}
     radial-gradient(120% 90% at 50% 38%,rgba(244,247,239,.92) 0,rgba(244,247,239,.72) 46%,rgba(244,247,239,.55) 100%),
     linear-gradient(180deg,var(--bg-main) 0,rgba(244,247,239,.4) 30%,rgba(244,247,239,.2) 70%,var(--bg-main) 100%);
 }
+/* Slim watercolour grape vines cascading down each edge. The art is tiled at a
+   fixed width (background-repeat-y) so the grapes stay a delicate, consistent
+   size no matter how tall the section is, and the inner edge is feathered so the
+   vine melts into the vineyard background. */
 .date-vine{
   position:absolute;
   top:0;
   right:0;
   bottom:0;
-  width:38%;
-  max-width:190px;
+  width:118px;
   z-index:1;
   pointer-events:none;
-  overflow:hidden;
+  background-image:url('assets/grape-vine-right.webp?v=3');
+  background-repeat:repeat-y;
+  background-position:right top;
+  background-size:118px auto;
+  filter:saturate(1.04) contrast(1.03);
+  -webkit-mask-image:linear-gradient(270deg,#000 60%,transparent 100%);
+          mask-image:linear-gradient(270deg,#000 60%,transparent 100%);
 }
-/* A continuous watercolour grape vine cascading down the right edge. The art is
-   shown opaque (its warm cream field reads as a luminous band) and its inner
-   edge is feathered so it melts into the vineyard background — fully visible,
-   no pale seam. */
-.date-vine img{
-  position:absolute;
-  top:0;
-  bottom:0;
-  right:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:right top;
-  opacity:1;
-  filter:saturate(1.05) contrast(1.04);
-  /* Feather the inner (left) edge so the band melts into the page. */
-  -webkit-mask-image:linear-gradient(270deg,#000 66%,transparent 100%);
-          mask-image:linear-gradient(270deg,#000 66%,transparent 100%);
-}
-/* Mirror vine on the left edge of the section. */
-.date-vine.left{right:auto;left:0;}
-.date-vine.left img{
+.date-vine.left{
   right:auto;
   left:0;
-  object-position:left top;
-  /* Feather the inner (right) edge instead. */
-  -webkit-mask-image:linear-gradient(90deg,#000 66%,transparent 100%);
-          mask-image:linear-gradient(90deg,#000 66%,transparent 100%);
+  background-image:url('assets/grape-vine-left.webp?v=1');
+  background-position:left top;
+  -webkit-mask-image:linear-gradient(90deg,#000 60%,transparent 100%);
+          mask-image:linear-gradient(90deg,#000 60%,transparent 100%);
+}
+.date-vine img{display:none;}
+@media (min-width:560px){
+  .date-vine{width:150px;background-size:150px auto;}
 }
 #date > :not(.date-bg):not(.date-vine):not(.landscape-strip){position:relative;z-index:2;}
 
