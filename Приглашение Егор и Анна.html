@@ -762,17 +762,27 @@ a{color:inherit;}
 .avoid-card ul{margin:0;padding-left:18px;color:var(--ink);font-size:14px;}
 .avoid-card li+li{margin-top:8px;}
 
+/* Образы: листаемая карусель с крупными карточками во всю ширину и
+   «подглядыванием» соседнего слайда. Горизонтальный scroll-snap нативный и
+   не влияет на прокрутку страницы (это отдельный локальный контейнер). */
 .outfit-gallery{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:7px;
-  margin:30px -10px 0;
+  display:flex;
+  gap:14px;
+  margin:30px -24px 0;
+  padding:6px 24px 26px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;          /* Firefox: скрыть полосу прокрутки */
 }
+.outfit-gallery::-webkit-scrollbar{display:none;} /* WebKit: скрыть полосу */
 .outfit-photo{
   position:relative;
+  flex:0 0 86%;                  /* крупно; 14% оставляем на край соседнего слайда */
   aspect-ratio:1;
+  scroll-snap-align:center;
   overflow:hidden;
-  border-radius:8px;
+  border-radius:10px;
   border:1px solid var(--line);
   background:#eee5dc;
   box-shadow:0 16px 36px rgba(72,60,42,.1);
@@ -782,6 +792,23 @@ a{color:inherit;}
   height:100%;
   object-fit:cover;
   filter:saturate(.94) contrast(1.02);
+}
+.outfit-dots{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-top:8px;
+}
+.outfit-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:rgba(95,111,73,.28);
+  transition:background .25s var(--ease), transform .25s var(--ease);
+}
+.outfit-dot.is-active{
+  background:var(--olive);
+  transform:scale(1.25);
 }
 
 .form{
@@ -1156,9 +1183,13 @@ a{color:inherit;}
 
     <section class="screen compact" id="outfits">
       <h2 class="kicker center reveal">Примеры образов</h2>
-      <div class="outfit-gallery reveal delay-1">
+      <div class="outfit-gallery reveal delay-1" id="outfitGallery">
         <div class="outfit-photo"><img src="assets/outfits-women-grid.webp" alt="Примеры женских образов" loading="lazy" decoding="async" /></div>
         <div class="outfit-photo"><img src="assets/outfits-men-grid.webp" alt="Примеры мужских образов" loading="lazy" decoding="async" /></div>
+      </div>
+      <div class="outfit-dots reveal delay-2" id="outfitDots" aria-hidden="true">
+        <span class="outfit-dot is-active"></span>
+        <span class="outfit-dot"></span>
       </div>
     </section>
 
@@ -1579,6 +1610,33 @@ a{color:inherit;}
     detailsObserver.observe(detailsAccordion);
   }else{
     openDetails();
+  }
+
+  // Карусель образов: точка-индикатор отражает активный слайд при свайпе.
+  // Слушатель висит на самом контейнере галереи (не на window) и срабатывает
+  // только во время горизонтального свайпа по ней — дёшево и rAF-сглажено.
+  const outfitGallery = document.getElementById('outfitGallery');
+  const outfitDots = document.getElementById('outfitDots');
+  if(outfitGallery && outfitDots){
+    const odots = Array.from(outfitDots.children);
+    let outfitRaf = null;
+    function syncOutfitDots(){
+      outfitRaf = null;
+      const slides = outfitGallery.children;
+      if(!slides.length) return;
+      const mid = outfitGallery.scrollLeft + outfitGallery.clientWidth / 2;
+      let active = 0, best = Infinity;
+      for(let i = 0; i < slides.length; i++){
+        const center = slides[i].offsetLeft + slides[i].offsetWidth / 2;
+        const dist = Math.abs(center - mid);
+        if(dist < best){ best = dist; active = i; }
+      }
+      odots.forEach((dot, i) => dot.classList.toggle('is-active', i === active));
+    }
+    outfitGallery.addEventListener('scroll', () => {
+      if(outfitRaf) return;
+      outfitRaf = window.requestAnimationFrame(syncOutfitDots);
+    }, {passive:true});
   }
 
   const form = document.getElementById('rsvpForm');
