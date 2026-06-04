@@ -149,11 +149,11 @@ a{color:inherit;}
 .screen.compact{min-height:auto;padding-top:78px;padding-bottom:78px;}
 .grape-accent{
   position:absolute;
-  z-index:1;
+  z-index:4;
   pointer-events:none;
   user-select:none;
-  opacity:.32;
-  filter:saturate(.86) brightness(1.05) contrast(.96);
+  opacity:.58;
+  filter:saturate(1.02) brightness(1.08) contrast(1.02);
 }
 .grape-accent img{
   width:100%;
@@ -169,7 +169,7 @@ a{color:inherit;}
   right:-184px;
   width:388px;
   height:582px;
-  opacity:.38;
+  opacity:.62;
   transform:scaleX(-1);
 }
 .accent-venue{
@@ -177,14 +177,14 @@ a{color:inherit;}
   right:-210px;
   width:390px;
   height:585px;
-  opacity:.28;
+  opacity:.58;
 }
 .accent-program{
   right:-52px;
   bottom:24px;
   width:178px;
   height:204px;
-  opacity:.3;
+  opacity:.78;
   transform:rotate(7deg);
 }
 .accent-details{
@@ -192,37 +192,36 @@ a{color:inherit;}
   right:-224px;
   width:390px;
   height:585px;
-  opacity:.24;
+  opacity:.54;
 }
 .accent-dress{
   top:168px;
   left:-148px;
   width:320px;
   height:480px;
-  opacity:.22;
+  opacity:.48;
 }
 .accent-outfits{
   top:-118px;
   right:-214px;
   width:382px;
   height:573px;
-  opacity:.24;
+  opacity:.52;
 }
 .accent-rsvp{
   right:-258px;
   bottom:-72px;
   width:395px;
   height:592px;
-  opacity:.18;
+  opacity:.42;
 }
 .accent-final{
   left:-186px;
   top:-52px;
   width:410px;
   height:615px;
-  opacity:.44;
-  filter:saturate(.95) brightness(1.16) contrast(.98);
-  mix-blend-mode:screen;
+  opacity:.68;
+  filter:saturate(1.04) brightness(1.12) contrast(1.02);
 }
 .center{text-align:center;}
 .title{
@@ -1195,7 +1194,7 @@ a{color:inherit;}
   overflow:hidden;
   color:#fffdf7;
 }
-.final-banner img{
+.final-banner > img{
   position:absolute;
   inset:0;
   width:100%;
@@ -1211,7 +1210,7 @@ a{color:inherit;}
 }
 .final-copy{
   position:relative;
-  z-index:1;
+  z-index:5;
   width:100%;
   max-width:330px;
   margin:0 auto;
