@@ -642,30 +642,30 @@ a{color:inherit;}
   top:0;
   right:0;
   bottom:0;
-  width:46%;
-  max-width:215px;
+  width:38%;
+  max-width:190px;
   z-index:1;
   pointer-events:none;
   overflow:hidden;
 }
-/* A continuous watercolour grape vine cascading down the right edge. The art
-   sits on a cream field; multiply lets the cream blend invisibly into the page
-   while the grapes and leaves darken through — no box and no pale seam. */
+/* A continuous watercolour grape vine cascading down the right edge. The art is
+   shown opaque (its warm cream field reads as a luminous band) and its inner
+   edge is feathered so it melts into the vineyard background — fully visible,
+   no pale seam. */
 .date-vine img{
   position:absolute;
   top:0;
   bottom:0;
-  right:-6%;
-  width:auto;
+  right:0;
+  width:100%;
   height:100%;
   object-fit:cover;
   object-position:right top;
-  mix-blend-mode:multiply;
   opacity:1;
-  filter:saturate(1.12) contrast(1.12);
-  /* Feather the inner edge so the vine melts into the page. */
-  -webkit-mask-image:linear-gradient(270deg,#000 74%,transparent 100%);
-          mask-image:linear-gradient(270deg,#000 74%,transparent 100%);
+  filter:saturate(1.05) contrast(1.04);
+  /* Feather the inner (left) edge so the band melts into the page. */
+  -webkit-mask-image:linear-gradient(270deg,#000 66%,transparent 100%);
+          mask-image:linear-gradient(270deg,#000 66%,transparent 100%);
 }
 #date > :not(.date-bg):not(.date-vine):not(.landscape-strip){position:relative;z-index:2;}
 
@@ -1275,7 +1275,7 @@ a{color:inherit;}
 
     <section class="screen center" id="date">
       <div class="date-bg" aria-hidden="true"><img src="assets/vineyard-banner.webp" alt="" loading="lazy" decoding="async" /></div>
-      <div class="date-vine" aria-hidden="true"><img src="assets/grape-vine-right.webp?v=2" alt="" loading="lazy" decoding="async" /></div>
+      <div class="date-vine" aria-hidden="true"><img src="assets/grape-vine-right.webp?v=3" alt="" loading="lazy" decoding="async" /></div>
       <div class="date-number reveal">20</div>
       <div class="date-month reveal delay-1">августа</div>
       <div class="date-year reveal delay-2">2026</div>
