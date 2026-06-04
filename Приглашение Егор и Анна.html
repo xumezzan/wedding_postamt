@@ -6,8 +6,9 @@
 <title>Егор и Анна - свадебное приглашение</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Jost:wght@300;400;500&amp;display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&amp;display=swap" rel="stylesheet" />
 <link rel="preload" as="image" href="assets/bride-groom-portrait.webp" fetchpriority="high" />
+<link rel="preload" as="image" href="assets/grape-border-tall.png" fetchpriority="high" />
 <style>
 :root{
   --paper:#fffdf7;
@@ -28,8 +29,10 @@
   --champagne:#d9c9ac;
   --gold:#b89a59;
   --shadow:0 22px 55px rgba(72,60,42,.14);
-  --serif:"Cormorant Garamond", Georgia, serif;
-  --sans:"Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --serif:"Cormorant Garamond", "EB Garamond", Georgia, serif;
+  /* Весь текст — один шрифт с засечками (Garamond). --sans теперь указывает
+     на тот же серифный стек, чтобы убрать разнобой шрифтов. */
+  --sans:"Cormorant Garamond", "EB Garamond", Georgia, serif;
   --ease:cubic-bezier(.22,.61,.36,1);
   --page:430px;
 }
@@ -56,9 +59,11 @@ body{
      Safari/iOS (он отключает композитный fast-path и репейнтит весь экран). */
   background-color:var(--bg-main);
   font-family:var(--sans);
-  font-size:16px;
-  font-weight:300;
-  line-height:1.65;
+  /* Garamond — более узкий и светлый, чем Jost, поэтому для читаемости
+     основного текста чуть крупнее и плотнее. */
+  font-size:17px;
+  font-weight:400;
+  line-height:1.6;
   overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
@@ -239,8 +244,20 @@ a{color:inherit;}
   overflow:hidden;
   border:1px solid rgba(95,111,73,.13);
   border-radius:2px;
-  background:#f1efeb;
+  background:
+    radial-gradient(120% 74% at 50% 30%,rgba(255,253,247,.92) 0,rgba(246,240,229,.7) 58%,rgba(222,214,199,.42) 100%),
+    linear-gradient(180deg,#f8f4eb,#eee7da);
   box-shadow:var(--shadow);
+}
+.envelope-stage::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:23;
+  pointer-events:none;
+  opacity:.08;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.48'/%3E%3C/svg%3E");
+  background-size:170px 170px;
 }
 .pair-photo{
   position:absolute;
@@ -312,7 +329,19 @@ a{color:inherit;}
   backface-visibility:hidden;
   transition:transform 2.35s cubic-bezier(.2,.72,.18,1);
 }
+.envelope-half::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    radial-gradient(120% 70% at 50% 28%,rgba(255,253,247,.74),rgba(255,253,247,0) 62%),
+    linear-gradient(90deg,rgba(163,144,112,.09),rgba(255,255,255,0) 17%,rgba(255,255,255,0) 83%,rgba(163,144,112,.08));
+}
 .envelope-half img{
+  position:relative;
+  z-index:0;
   width:100%;
   height:100%;
   object-fit:cover;
@@ -323,32 +352,129 @@ a{color:inherit;}
 .envelope-bottom img{object-position:center bottom;}
 .envelope-top{z-index:20;filter:drop-shadow(0 18px 28px rgba(35,30,25,.16));}
 .envelope-top img{object-position:center top;}
+.envelope-half img.env-ornament{
+  position:absolute;
+  inset:-1px;
+  z-index:2;
+  width:calc(100% + 2px);
+  height:calc(100% + 2px);
+  object-fit:cover;
+  object-position:center;
+  pointer-events:none;
+  mix-blend-mode:multiply;
+  opacity:.93;
+  filter:saturate(.92) contrast(1.02);
+}
 .env-title{
   position:absolute;
   left:26px;
   right:26px;
-  top:13%;
+  top:16%;
   z-index:22;
-  color:#191713;
+  color:#6f2530;
+  font-family:var(--serif);
+  text-align:center;
+}
+.env-kicker{
+  color:#6f6a5b;
+  font-size:17px;
+  font-weight:400;
+  line-height:1.2;
+}
+.env-title h1{
+  margin:13px 0 0;
+  color:#6e2330;
+  font-size:74px;
+  font-weight:300;
+  line-height:.88;
+}
+.env-title h1 span,
+.env-title h1 em{
+  display:block;
+}
+.env-title h1 em{
+  margin:-2px 0 -6px;
+  color:#83855f;
+  font-size:42px;
+  font-weight:300;
+  line-height:.78;
+}
+.env-title p{
+  margin:20px auto 0;
+  color:#746d60;
+  font-size:24px;
+  font-weight:400;
+  line-height:1.18;
+}
+.env-divider{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  width:146px;
+  margin:14px auto 0;
+  color:#b09b6b;
+}
+.env-divider::before,
+.env-divider::after{
+  content:"";
+  height:1px;
+  flex:1;
+  background:linear-gradient(90deg,transparent,rgba(176,155,107,.52));
+}
+.env-divider::after{
+  background:linear-gradient(90deg,rgba(176,155,107,.52),transparent);
+}
+.env-divider i{
+  width:22px;
+  height:17px;
+  background:
+    radial-gradient(circle at 50% 12%,currentColor 0 2.3px,transparent 2.6px),
+    radial-gradient(circle at 36% 38%,currentColor 0 2.2px,transparent 2.5px),
+    radial-gradient(circle at 64% 38%,currentColor 0 2.2px,transparent 2.5px),
+    radial-gradient(circle at 50% 63%,currentColor 0 2.2px,transparent 2.5px),
+    radial-gradient(circle at 50% 88%,currentColor 0 2px,transparent 2.3px);
+}
+.env-seal-monogram{
+  position:absolute;
+  left:50%;
+  top:71.8%;
+  z-index:24;
+  transform:translate(-50%,-50%);
+  color:#ad9a76;
   font-family:var(--serif);
   font-size:34px;
+  font-style:italic;
   font-weight:400;
-  line-height:1.16;
-  text-align:center;
+  line-height:1;
+  text-shadow:0 1px 0 rgba(255,255,255,.72);
+  pointer-events:none;
 }
 .tap-note{
   position:absolute;
   left:0;
   right:0;
-  bottom:34px;
+  bottom:32px;
   z-index:24;
-  color:#8d8a90;
+  color:#6e2330;
   font-family:var(--serif);
   font-size:23px;
   line-height:1.25;
-  letter-spacing:.04em;
   text-align:center;
   transition:opacity .75s var(--ease), transform .75s var(--ease);
+}
+.tap-note::after{
+  content:"";
+  display:block;
+  width:92px;
+  height:15px;
+  margin:11px auto 0;
+  color:#b09b6b;
+  background:
+    linear-gradient(90deg,transparent,rgba(176,155,107,.52) 42%,transparent 42% 58%,rgba(176,155,107,.52) 58%,transparent),
+    radial-gradient(circle at 50% 50%,currentColor 0 2.2px,transparent 2.5px),
+    radial-gradient(circle at 43% 50%,currentColor 0 1.8px,transparent 2.1px),
+    radial-gradient(circle at 57% 50%,currentColor 0 1.8px,transparent 2.1px);
 }
 .intro.opened .pair-photo{opacity:1;transform:scale(1);}
 .intro.opened .pair-copy{opacity:1;transform:none;}
@@ -485,6 +611,67 @@ a{color:inherit;}
   background:linear-gradient(180deg,var(--bg-main) 0,rgba(244,247,239,.56) 22%,rgba(244,247,239,0) 58%);
 }
 
+/* Date / countdown section — soft vineyard background in the main style with a
+   tall grape vine descending the right edge. */
+#date{overflow:hidden;}
+.date-bg{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+}
+.date-bg img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  opacity:.5;
+  filter:saturate(.86) brightness(1.04);
+}
+/* Soft ivory scrim so the numbers and text stay perfectly legible. */
+.date-bg::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(120% 90% at 50% 38%,rgba(244,247,239,.92) 0,rgba(244,247,239,.72) 46%,rgba(244,247,239,.55) 100%),
+    linear-gradient(180deg,var(--bg-main) 0,rgba(244,247,239,.4) 30%,rgba(244,247,239,.2) 70%,var(--bg-main) 100%);
+}
+.date-vine{
+  position:absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  width:46%;
+  max-width:215px;
+  z-index:1;
+  pointer-events:none;
+  overflow:hidden;
+}
+/* A continuous watercolour grape vine cascading down the right edge. The art
+   sits on a cream field, so multiply drops the background and keeps the vine. */
+.date-vine img{
+  position:absolute;
+  top:0;
+  bottom:0;
+  right:-6%;
+  width:auto;
+  height:100%;
+  object-fit:cover;
+  object-position:right top;
+  mix-blend-mode:multiply;
+  opacity:1;
+  filter:saturate(1.02) contrast(1.03);
+}
+/* Soften the inner (left) edge so the vine melts into the page. */
+.date-vine::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(270deg,transparent 70%,rgba(244,247,239,.85) 100%);
+}
+#date > :not(.date-bg):not(.date-vine):not(.landscape-strip){position:relative;z-index:2;}
+
 .venue-photo{
   height:46svh;
   min-height:330px;
@@ -507,7 +694,6 @@ a{color:inherit;}
 .venue-card{
   position:relative;
   z-index:2;
-  margin-top:-70px;
   padding:34px 20px 22px;
   border-radius:10px;
   background:linear-gradient(180deg,rgba(255,253,247,.92),var(--paper));
@@ -593,10 +779,10 @@ a{color:inherit;}
   left:0;
   top:0;
   z-index:3;
-  width:38px;
-  height:44px;
+  width:62px;
+  height:72px;
   color:var(--olive);
-  filter:drop-shadow(0 12px 14px rgba(95,111,73,.18));
+  filter:drop-shadow(0 14px 16px rgba(95,111,73,.2));
   transform:translate3d(-50%,-50%,0);
   will-change:transform;
 }
@@ -646,55 +832,44 @@ a{color:inherit;}
   color:var(--ink);
 }
 
-.accordion{
+.details-grid{
   display:grid;
-  gap:14px;
+  gap:30px;
   margin-top:38px;
 }
 .detail-item{
+  max-width:84%;
   opacity:0;
   transform:translateY(16px);
   transition:opacity .55s var(--ease), transform .55s var(--ease);
 }
-.accordion.details-active .detail-item{
+.detail-left{justify-self:start;text-align:left;}
+.detail-right{justify-self:end;text-align:right;}
+.details-grid.details-active .detail-item{
   opacity:1;
   transform:none;
 }
-.accordion.details-active .detail-item:nth-child(1){transition-delay:.02s;}
-.accordion.details-active .detail-item:nth-child(2){transition-delay:.18s;}
-.accordion.details-active .detail-item:nth-child(3){transition-delay:.34s;}
-.accordion.details-active .detail-item:nth-child(4){transition-delay:.5s;}
-.detail-toggle{
-  width:100%;
-  min-height:58px;
-  display:grid;
-  grid-template-columns:24px 1fr 18px;
+.details-grid.details-active .detail-item:nth-child(1){transition-delay:.02s;}
+.details-grid.details-active .detail-item:nth-child(2){transition-delay:.18s;}
+.details-grid.details-active .detail-item:nth-child(3){transition-delay:.34s;}
+.details-grid.details-active .detail-item:nth-child(4){transition-delay:.5s;}
+.detail-head{
+  display:flex;
   align-items:center;
-  gap:12px;
-  padding:0 16px;
-  border:1px solid var(--line);
-  border-radius:7px;
+  gap:10px;
+  margin-bottom:7px;
+  font-family:var(--serif);
+  font-size:19px;
   color:var(--ink);
-  background:rgba(255,255,255,.74);
-  box-shadow:0 12px 28px rgba(65,55,39,.08);
-  text-align:left;
-  cursor:default;
 }
-.detail-toggle svg{width:18px;height:18px;color:var(--olive);}
-.chev{transition:transform .25s var(--ease);}
-.detail-panel{
-  max-height:0;
-  overflow:hidden;
-  padding:0 16px;
+.detail-right .detail-head{flex-direction:row-reverse;}
+.detail-head svg{width:19px;height:19px;color:var(--olive);flex:none;}
+.detail-text{
   color:var(--soft);
   font-size:14px;
-  transition:max-height .7s var(--ease), padding .7s var(--ease);
+  line-height:1.55;
+  margin:0;
 }
-.detail-item.open .detail-panel{
-  max-height:180px;
-  padding:12px 16px 4px;
-}
-.detail-item.open .chev{transform:rotate(180deg);}
 
 .swatches{
   position:relative;
@@ -1024,7 +1199,13 @@ a{color:inherit;}
 
 @media (max-height:720px){
   .envelope-stage{min-height:0;height:calc(100svh - 18px);}
-  .env-title{top:10%;font-size:30px;}
+  .env-title{top:12%;}
+  .env-kicker{font-size:15px;}
+  .env-title h1{font-size:62px;}
+  .env-title h1 em{font-size:36px;}
+  .env-title p{margin-top:15px;font-size:20px;}
+  .env-divider{margin-top:11px;}
+  .env-seal-monogram{top:71.6%;font-size:30px;}
   .tap-note{bottom:22px;font-size:21px;}
   .pair-names{font-size:43px;}
 }
@@ -1069,7 +1250,15 @@ a{color:inherit;}
         </div>
         <div class="envelope-half envelope-top" aria-hidden="true">
           <img src="assets/envelope-top-seal.webp" alt="" decoding="async" />
-          <div class="env-title">Приглашение<br />на свадьбу</div>
+          <img class="env-ornament" src="assets/grape-border-tall.png" alt="" decoding="async" fetchpriority="high" />
+          <div class="env-title">
+            <div class="env-kicker">С любовью и радостью</div>
+            <div class="env-divider" aria-hidden="true"><i></i></div>
+            <h1><span>Егор</span><em>и</em><span>Анна</span></h1>
+            <div class="env-divider" aria-hidden="true"><i></i></div>
+            <p>приглашают вас<br />на свадебное торжество</p>
+          </div>
+          <div class="env-seal-monogram">E&amp;A</div>
         </div>
         <div class="tap-note">нажмите,<br />чтобы открыть</div>
       </div>
@@ -1088,7 +1277,8 @@ a{color:inherit;}
     </section>
 
     <section class="screen center" id="date">
-      <div class="vine top-right" aria-hidden="true"><svg viewBox="0 0 120 120" fill="none"><path d="M17 100C52 77 78 46 104 15" stroke="currentColor" stroke-width="1.2"/><path d="M42 76c-17-2-23-12-24-25 16 0 27 8 24 25ZM66 53c-16-5-20-16-17-28 15 3 24 14 17 28ZM83 34c-7-15-2-25 9-32 8 13 5 26-9 32Z" fill="currentColor" opacity=".55"/></svg></div>
+      <div class="date-bg" aria-hidden="true"><img src="assets/vineyard-banner.webp" alt="" loading="lazy" decoding="async" /></div>
+      <div class="date-vine" aria-hidden="true"><img src="assets/grape-vine-right.webp" alt="" loading="lazy" decoding="async" /></div>
       <div class="date-number reveal">20</div>
       <div class="date-month reveal delay-1">августа</div>
       <div class="date-year reveal delay-2">2026</div>
@@ -1104,7 +1294,6 @@ a{color:inherit;}
     </section>
 
     <section class="screen" id="venue">
-      <div class="venue-photo"><img src="assets/vineyard-banner.webp" alt="Вид на место проведения" loading="lazy" decoding="async" /></div>
       <div class="venue-card reveal">
         <h2 class="venue-name">Банкетный зал «Заберег»</h2>
         <p class="venue-address">Ленинградская область<br />41К-313, 30</p>
@@ -1152,38 +1341,34 @@ a{color:inherit;}
     <section class="screen compact" id="details">
       <div class="vine top-right" aria-hidden="true"><svg viewBox="0 0 120 120" fill="none"><path d="M17 100C52 77 78 46 104 15" stroke="currentColor" stroke-width="1.2"/><path d="M42 76c-17-2-23-12-24-25 16 0 27 8 24 25ZM66 53c-16-5-20-16-17-28 15 3 24 14 17 28ZM83 34c-7-15-2-25 9-32 8 13 5 26-9 32Z" fill="currentColor" opacity=".55"/></svg></div>
       <h2 class="title center reveal">Детали</h2>
-      <div class="accordion reveal delay-1" id="detailsAccordion">
-        <div class="detail-item">
-          <button class="detail-toggle" type="button">
+      <div class="details-grid reveal delay-1" id="detailsAccordion">
+        <div class="detail-item detail-left">
+          <div class="detail-head">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 16h16M5 16v3M19 16v3M7 13h10l2 3H5l2-3Z"/></svg>
             <span>Трансфер</span>
-            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 9 6 6 6-6"/></svg>
-          </button>
-          <div class="detail-panel">Если вам нужна помощь с дорогой, напишите нам заранее, и мы подскажем удобный маршрут.</div>
+          </div>
+          <p class="detail-text">Если вам нужна помощь с дорогой, напишите нам заранее, и мы подскажем удобный маршрут.</p>
         </div>
-        <div class="detail-item">
-          <button class="detail-toggle" type="button">
+        <div class="detail-item detail-right">
+          <div class="detail-head">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H8a2 2 0 1 1 2-2c0 2-2 2-2 2M12 7h4a2 2 0 1 0-2-2c0 2 2 2 2 2"/></svg>
             <span>Подарки</span>
-            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 9 6 6 6-6"/></svg>
-          </button>
-          <div class="detail-panel">Будем благодарны подарку в конверте: он поможет осуществить наши семейные мечты.</div>
+          </div>
+          <p class="detail-text">Будем благодарны подарку в конверте: он поможет осуществить наши семейные мечты.</p>
         </div>
-        <div class="detail-item">
-          <button class="detail-toggle" type="button">
+        <div class="detail-item detail-left">
+          <div class="detail-head">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22s7-4 7-11a7 7 0 1 0-14 0c0 7 7 11 7 11Z"/><path d="M12 11c2-3 5-3 6 0"/></svg>
             <span>Цветы</span>
-            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 9 6 6 6-6"/></svg>
-          </button>
-          <div class="detail-panel">Если захотите подарить цветы, выбирайте нежные светлые оттенки или зелень.</div>
+          </div>
+          <p class="detail-text">Если захотите подарить цветы, выбирайте нежные светлые оттенки или зелень.</p>
         </div>
-        <div class="detail-item">
-          <button class="detail-toggle" type="button">
+        <div class="detail-item detail-right">
+          <div class="detail-head">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.32 1.77.59 2.61a2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.46-1.15a2 2 0 0 1 2.11-.45c.84.27 1.71.47 2.61.59A2 2 0 0 1 22 16.92Z"/></svg>
             <span>Контакты</span>
-            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 9 6 6 6-6"/></svg>
-          </button>
-          <div class="detail-panel">Анна: 8 (999) 999-99-99. Егор: 8 (999) 999-99-99.</div>
+          </div>
+          <p class="detail-text">Анна: 8 (999) 999-99-99. Егор: 8 (999) 999-99-99.</p>
         </div>
       </div>
     </section>
@@ -1193,10 +1378,10 @@ a{color:inherit;}
       <h2 class="title reveal">Dress code</h2>
       <div class="swatches reveal delay-1">
         <span class="swatch" style="background:#e9dccb;"></span>
-        <span class="swatch" style="background:#f5efe5;"></span>
         <span class="swatch" style="background:#aeb797;"></span>
         <span class="swatch" style="background:#637046;"></span>
         <span class="swatch" style="background:#b9a77f;"></span>
+        <span class="swatch" style="background:#5b1a2b;"></span>
       </div>
       <p class="text reveal delay-2">Будем благодарны, если вы поддержите цветовую гамму нашего праздника.</p>
       <div class="avoid-card reveal delay-3">
@@ -1623,16 +1808,12 @@ a{color:inherit;}
   window.setInterval(tick, 1000);
 
   const detailsAccordion = document.getElementById('detailsAccordion');
-  const detailItems = detailsAccordion ? Array.from(detailsAccordion.querySelectorAll('.detail-item')) : [];
   let detailsOpened = false;
 
   function openDetails(){
     if(detailsOpened || !detailsAccordion) return;
     detailsOpened = true;
     detailsAccordion.classList.add('details-active');
-    detailItems.forEach((item,index) => {
-      window.setTimeout(() => item.classList.add('open'), reduceMotion ? 0 : 170 * index);
-    });
   }
 
   if(detailsAccordion && 'IntersectionObserver' in window){
