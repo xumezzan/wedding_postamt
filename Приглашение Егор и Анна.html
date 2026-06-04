@@ -46,7 +46,6 @@ html{
      запускается точечно через scrollIntoView({behavior:'smooth'}). */
   -webkit-text-size-adjust:100%;
   background:var(--bg-main);
-  -webkit-overflow-scrolling:touch;
 }
 body{
   margin:0;
@@ -67,7 +66,10 @@ body{
   overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
-  text-rendering:optimizeLegibility;
+  /* text-rendering:optimizeLegibility убран: на WebKit он форсирует пересчёт
+     кернинга/лигатур при каждом релейауте (открытие деталей, тики таймера),
+     а кернинг и обычные лигатуры и так включены по умолчанию (font-kerning
+     /font-variant-ligatures:normal) — визуально то же, но дешевле. */
 }
 /* Fine handmade-paper grain — a fixed, full-viewport SVG fractal-noise wash
    sitting just above the gradient and below all content. Extremely low opacity
