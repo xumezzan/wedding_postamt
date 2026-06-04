@@ -637,15 +637,16 @@ a{color:inherit;}
     radial-gradient(120% 90% at 50% 38%,rgba(244,247,239,.92) 0,rgba(244,247,239,.72) 46%,rgba(244,247,239,.55) 100%),
     linear-gradient(180deg,var(--bg-main) 0,rgba(244,247,239,.4) 30%,rgba(244,247,239,.2) 70%,var(--bg-main) 100%);
 }
-/* One full watercolour grape vine down each edge — shown once at full length
-   (no cropping, no tiling). The inner edge is feathered so the vine melts into
-   the vineyard background. */
+/* One watercolour grape vine down each edge, shown once at its natural
+   proportions (no stretching, no tiling). Both sides use the same width and a
+   height that follows the image aspect, so left and right are the same length.
+   The inner edge is feathered so the vine melts into the vineyard background. */
 .date-vine{
   position:absolute;
   top:0;
   right:0;
-  bottom:0;
   width:130px;
+  height:454px; /* 130 / (440/1536) — keeps the artwork at true proportions */
   z-index:1;
   pointer-events:none;
   background-image:url('assets/grape-vine-right.webp?v=3');
@@ -665,7 +666,7 @@ a{color:inherit;}
           mask-image:linear-gradient(90deg,#000 58%,transparent 100%);
 }
 @media (min-width:560px){
-  .date-vine{width:160px;}
+  .date-vine{width:160px;height:558px;} /* 160 / (440/1536) */
 }
 #date > :not(.date-bg):not(.date-vine):not(.landscape-strip){position:relative;z-index:2;}
 
