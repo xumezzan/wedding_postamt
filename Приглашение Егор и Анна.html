@@ -280,8 +280,7 @@ a{color:inherit;}
 .envelope-stage{
   position:relative;
   height:calc(100svh - 24px);
-  min-height:670px;
-  max-height:842px;
+  min-height:560px;
   overflow:hidden;
   border:1px solid rgba(95,111,73,.13);
   border-radius:2px;
@@ -394,18 +393,9 @@ a{color:inherit;}
 .envelope-top{z-index:20;filter:drop-shadow(0 18px 28px rgba(35,30,25,.16));}
 .envelope-top img{object-position:center top;}
 .envelope-top::after{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:71.8%;
-  z-index:23;
-  width:226px;
-  height:226px;
-  border-radius:50%;
-  background:
-    radial-gradient(circle at 50% 45%,rgba(255,255,255,.98) 0 62%,rgba(250,249,244,.96) 76%,rgba(250,249,244,0) 100%);
-  transform:translate(-50%,-50%);
-  pointer-events:none;
+  /* Раньше — белая подложка под печатью на фикс. top:71.8%. Печать теперь
+     живёт в .env-stack как элемент потока, поэтому подложка не нужна. */
+  content:none;
 }
 .envelope-half img.env-ornament{
   position:absolute;
@@ -420,26 +410,39 @@ a{color:inherit;}
   opacity:.93;
   filter:saturate(.92) contrast(1.02);
 }
-.env-title{
+/* Конверт — единый вертикальный поток (текст → печать → подсказка).
+   Раньше текст и печать были независимыми абсолютными слоями (top:16% и
+   top:71.8%) и на экранах с меньшей высотой (in-app браузеры с тулбаром)
+   наезжали друг на друга. Теперь это flex-колонка: воздух между блоками
+   сжимается равномерно, печать всегда остаётся ниже текста. */
+.env-stack{
   position:absolute;
-  left:26px;
-  right:26px;
-  top:16%;
+  inset:0;
   z-index:22;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:6% 26px 4.5%;
+}
+.env-title{
+  flex:0 0 auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
   color:#6f2530;
   font-family:var(--serif);
   text-align:center;
 }
 .env-kicker{
   color:#6f6a5b;
-  font-size:19px;
+  font-size:min(19px,2.8vh);
   font-weight:400;
   line-height:1.2;
 }
 .env-title h1{
   margin:13px 0 0;
   color:#6e2330;
-  font-size:74px;
+  font-size:min(74px,10.6vh);
   font-style:italic;
   font-weight:300;
   line-height:.88;
@@ -451,7 +454,7 @@ a{color:inherit;}
 .env-title h1 em{
   margin:-2px 0 -6px;
   color:#83855f;
-  font-size:42px;
+  font-size:min(42px,6vh);
   font-style:italic;
   font-weight:300;
   line-height:.78;
@@ -459,7 +462,7 @@ a{color:inherit;}
 .env-title p{
   margin:20px auto 0;
   color:#746d60;
-  font-size:24px;
+  font-size:min(24px,3.5vh);
   font-weight:400;
   line-height:1.18;
 }
@@ -493,26 +496,22 @@ a{color:inherit;}
     radial-gradient(circle at 50% 88%,currentColor 0 2px,transparent 2.3px);
 }
 .envelope-half img.env-seal-image{
-  position:absolute;
-  left:50%;
-  top:71.8%;
+  flex:0 0 auto;
+  margin:auto 0 0;
   z-index:24;
-  width:220px;
-  height:220px;
+  width:min(206px,40vw);
+  height:min(206px,40vw);
   object-fit:contain;
-  transform:translate(-50%,-50%);
   filter:drop-shadow(0 12px 16px rgba(55,48,38,.16));
   pointer-events:none;
 }
 .tap-note{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:32px;
+  flex:0 0 auto;
+  margin-top:min(20px,2.4vh);
   z-index:24;
   color:#6e2330;
   font-family:var(--serif);
-  font-size:23px;
+  font-size:min(23px,3.3vh);
   line-height:1.25;
   text-align:center;
   transition:opacity .75s var(--ease), transform .75s var(--ease);
@@ -1268,16 +1267,11 @@ a{color:inherit;}
 .delay-3{transition-delay:.3s;}
 
 @media (max-height:720px){
+  /* Конверт теперь масштабируется через min(..vh) в самих правилах — отдельные
+     фикс. размеры здесь больше не нужны. Остаётся лишь стянуть высоту сцены и
+     поджать имена на интро-фото (.pair-names не связан с конвертом). */
   .envelope-stage{min-height:0;height:calc(100svh - 18px);}
-  .env-title{top:12%;}
-  .env-kicker{font-size:16px;}
-  .env-title h1{font-size:62px;}
-  .env-title h1 em{font-size:36px;}
-  .env-title p{margin-top:15px;font-size:20px;}
   .env-divider{margin-top:11px;}
-  .envelope-top::after{top:71.6%;width:198px;height:198px;}
-  .envelope-half img.env-seal-image{top:71.6%;width:194px;height:194px;}
-  .tap-note{bottom:22px;font-size:21px;}
   .pair-names{font-size:43px;}
 }
 @media (min-width:620px){
@@ -1323,16 +1317,18 @@ a{color:inherit;}
         <div class="envelope-half envelope-top" aria-hidden="true">
           <img src="assets/envelope-top-seal.webp" alt="" decoding="async" />
           <img class="env-ornament" src="assets/grape-border-tall.png" alt="" decoding="async" fetchpriority="high" />
-          <div class="env-title">
-            <div class="env-kicker">С любовью и радостью</div>
-            <div class="env-divider" aria-hidden="true"><i></i></div>
-            <h1><span>Сарвар</span><em>и</em><span>Ёра</span></h1>
-            <div class="env-divider" aria-hidden="true"><i></i></div>
-            <p>приглашают вас<br />на свадебное торжество</p>
+          <div class="env-stack">
+            <div class="env-title">
+              <div class="env-kicker">С любовью и радостью</div>
+              <div class="env-divider" aria-hidden="true"><i></i></div>
+              <h1><span>Сарвар</span><em>и</em><span>Ёра</span></h1>
+              <div class="env-divider" aria-hidden="true"><i></i></div>
+              <p>приглашают вас<br />на свадебное торжество</p>
+            </div>
+            <img class="env-seal-image" src="assets/wax-seal-sy.webp" alt="" decoding="async" fetchpriority="high" />
+            <div class="tap-note">нажмите,<br />чтобы открыть</div>
           </div>
-          <img class="env-seal-image" src="assets/wax-seal-sy.webp" alt="" decoding="async" fetchpriority="high" />
         </div>
-        <div class="tap-note">нажмите,<br />чтобы открыть</div>
       </div>
     </button>
   </section>
@@ -1444,7 +1440,7 @@ a{color:inherit;}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.32 1.77.59 2.61a2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.46-1.15a2 2 0 0 1 2.11-.45c.84.27 1.71.47 2.61.59A2 2 0 0 1 22 16.92Z"/></svg>
             <span>Контакты</span>
           </div>
-          <p class="detail-text">Ёра: 8 (999) 999-99-99. Сарвар: 8 (999) 999-99-99.</p>
+          <p class="detail-text">Сарвар: +998 (93) 536-72-56</p>
         </div>
       </div>
     </section>
@@ -1509,7 +1505,7 @@ a{color:inherit;}
       </form>
       <div class="rsvp-contact reveal delay-2">
         <p class="lead">Если у вас возникнут вопросы или изменения, не&nbsp;стесняйтесь обратиться к&nbsp;нам:</p>
-        <p class="who">Ёра: 8 (999) 999-99-99<br />Сарвар: 8 (999) 999-99-99</p>
+        <p class="who">Сарвар: +998 (93) 536-72-56</p>
       </div>
       <div class="rsvp-thanks" id="rsvpThanks" tabindex="-1">
         Спасибо, ваш ответ сохранен.
@@ -1971,6 +1967,9 @@ a{color:inherit;}
 
   const form = document.getElementById('rsvpForm');
   const thanks = document.getElementById('rsvpThanks');
+  // URL веб-приложения Google Apps Script (см. инструкцию по настройке RSVP).
+  // Пока URL не задан, ответы сохраняются только локально в localStorage.
+  const RSVP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzIFddAHvZmCcG83j7LJs7Pl2YcGCn1omwn4gEm4hHH6BtW623Tj5tmbyhqhZxaFVsK/exec';
   form.addEventListener('submit', event => {
     event.preventDefault();
     if(!form.checkValidity()){
@@ -1980,12 +1979,26 @@ a{color:inherit;}
     const data = new FormData(form);
     const response = {};
     data.forEach((value,key) => response[key] = value);
+    response.sentAt = new Date().toISOString();
     try{
-      localStorage.setItem('wedding-rsvp-sarvar-yora', JSON.stringify({
-        ...response,
-        sentAt:new Date().toISOString()
-      }));
+      localStorage.setItem('wedding-rsvp-sarvar-yora', JSON.stringify(response));
     }catch(error){}
+    // Отправляем ответ в Google Таблицу через Apps Script.
+    // no-cors + text/plain: запрос уходит без CORS-префлайта, ответ не читаем,
+    // но строка в таблицу записывается. Ошибки сети игнорируем, чтобы гость
+    // в любом случае увидел экран благодарности (копия уже в localStorage).
+    if(RSVP_ENDPOINT){
+      try{
+        fetch(RSVP_ENDPOINT, {
+          method:'POST',
+          mode:'no-cors',
+          headers:{'Content-Type':'text/plain;charset=utf-8'},
+          body:JSON.stringify(response)
+        }).catch(() => {});
+      }catch(error){}
+    }
+    const submitBtn = form.querySelector('.submit-btn');
+    if(submitBtn) submitBtn.disabled = true;
     form.style.display = 'none';
     thanks.classList.add('show');
     thanks.focus({preventScroll:true});
