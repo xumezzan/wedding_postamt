@@ -763,7 +763,7 @@ a{color:inherit;}
 .program-list{
   position:relative;
   width:min(332px,100%);
-  height:548px;
+  height:660px;
   margin:34px auto 0;
 }
 .program-curve{
@@ -820,10 +820,19 @@ a{color:inherit;}
 .program-item.left{position:absolute;left:0;}
 .program-item.right{position:absolute;right:0;}
 .program-item.step-1{top:16px;}
-.program-item.step-2{top:124px;}
-.program-item.step-3{top:238px;}
-.program-item.step-4{top:348px;}
+.program-item.step-2{top:126px;}
+.program-item.step-3{top:236px;}
+.program-item.step-4{top:346px;}
 .program-item.step-5{top:456px;}
+.program-item.step-6{top:566px;}
+.program-desc{
+  display:block;
+  margin-top:6px;
+  font-size:11px;
+  line-height:1.45;
+  color:var(--soft);
+  opacity:.82;
+}
 .program-item::before{
   content:"";
   position:absolute;
@@ -1354,10 +1363,10 @@ a{color:inherit;}
       <div class="grape-accent accent-program" aria-hidden="true"><img class="g-top g-right" style="width:28%" src="assets/grape-frame-tr-2-a.webp?v=3" alt="" loading="lazy" decoding="async" /></div>
       <h2 class="title reveal">Программа дня</h2>
       <div class="program-list reveal delay-1">
-        <svg class="program-curve" viewBox="0 0 320 548" preserveAspectRatio="none" aria-hidden="true">
-          <path class="program-path-base" d="M164 0 C105 76 246 116 159 190 C72 264 246 306 160 382 C95 440 211 488 129 548" />
-          <path class="program-path-progress" id="programPathProgress" d="M164 0 C105 76 246 116 159 190 C72 264 246 306 160 382 C95 440 211 488 129 548" />
-          <path id="programMotionPath" d="M164 0 C105 76 246 116 159 190 C72 264 246 306 160 382 C95 440 211 488 129 548" />
+        <svg class="program-curve" viewBox="0 0 320 660" preserveAspectRatio="none" aria-hidden="true">
+          <path class="program-path-base" d="M164 0 C105 76 246 116 159 190 C72 264 246 306 160 382 C95 440 211 488 129 566 C100 610 200 640 160 660" />
+          <path class="program-path-progress" id="programPathProgress" d="M164 0 C105 76 246 116 159 190 C72 264 246 306 160 382 C95 440 211 488 129 566 C100 610 200 640 160 660" />
+          <path id="programMotionPath" d="M164 0 C105 76 246 116 159 190 C72 264 246 306 160 382 C95 440 211 488 129 566 C100 610 200 640 160 660" />
         </svg>
         <div class="program-grape" id="programGrape" aria-hidden="true">
           <svg viewBox="0 0 44 50" fill="none">
@@ -1373,11 +1382,12 @@ a{color:inherit;}
             <circle cx="26" cy="39" r="5.1" fill="#89936b"/>
           </svg>
         </div>
-        <div class="program-item step-1 left"><span class="program-time">15:00</span><span class="program-name">Сбор гостей</span></div>
-        <div class="program-item step-2 right"><span class="program-time">15:20</span><span class="program-name">Церемония</span></div>
-        <div class="program-item step-3 left"><span class="program-time">15:40</span><span class="program-name">Банкет</span></div>
-        <div class="program-item step-4 right"><span class="program-time">17:00</span><span class="program-name">Первый танец</span></div>
-        <div class="program-item step-5 left"><span class="program-time">23:00</span><span class="program-name">Завершение вечера</span></div>
+        <div class="program-item step-1 left"><span class="program-time">18:00</span><span class="program-name">Benvenuti!</span><span class="program-desc">Benvenuto Cocktail &amp; Musica</span></div>
+        <div class="program-item step-2 right"><span class="program-time">19:00</span><span class="program-name">La Cerimonia</span><span class="program-desc">Самый трогательный и эстетичный момент вечера</span></div>
+        <div class="program-item step-3 left"><span class="program-time">19:15</span><span class="program-name">Servizio Fotografico</span><span class="program-desc">Элегантные совместные фотографии</span></div>
+        <div class="program-item step-4 right"><span class="program-time">19:30</span><span class="program-name">Cena di Gala</span><span class="program-desc">Изысканная кухня, поздравления и южные эмоции</span></div>
+        <div class="program-item step-5 left"><span class="program-time">21:00</span><span class="program-name">Primo Ballo</span><span class="program-desc">Первый танец молодых под звёздами</span></div>
+        <div class="program-item step-6 right"><span class="program-time">23:00</span><span class="program-name">Arrivederci!</span><span class="program-desc">Яркие проводы в новую совместную жизнь</span></div>
       </div>
     </section>
 
